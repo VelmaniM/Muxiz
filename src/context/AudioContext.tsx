@@ -78,6 +78,35 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     };
   }, []);
 
+  // Lock screen & Notification Media Controls (Spotify-style lockscreen artwork & metadata)
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'mediaSession' in navigator && currentTrack) {
+      try {
+        const cleanTitle = currentTrack.title.replace(/[\(\[\{].*?[\)\]\}]/g, '').replace(/\.mp3$/i, '').trim();
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: cleanTitle,
+          artist: currentTrack.artist,
+          album: currentTrack.album || 'Muxiz',
+          artwork: [
+            { src: currentTrack.artwork, sizes: '96x96', type: 'image/jpeg' },
+            { src: currentTrack.artwork, sizes: '128x128', type: 'image/jpeg' },
+            { src: currentTrack.artwork, sizes: '192x192', type: 'image/jpeg' },
+            { src: currentTrack.artwork, sizes: '256x256', type: 'image/jpeg' },
+            { src: currentTrack.artwork, sizes: '384x384', type: 'image/jpeg' },
+            { src: currentTrack.artwork, sizes: '512x512', type: 'image/jpeg' },
+          ],
+        });
+
+        navigator.mediaSession.setActionHandler('play', () => { togglePlayPause(); });
+        navigator.mediaSession.setActionHandler('pause', () => { togglePlayPause(); });
+        navigator.mediaSession.setActionHandler('previoustrack', () => { previousTrack(); });
+        navigator.mediaSession.setActionHandler('nexttrack', () => { nextTrack(); });
+      } catch (err) {
+        console.log('MediaSession config:', err);
+      }
+    }
+  }, [currentTrack, isPlaying]);
+
   // Smooth position ticker when audio is playing
   useEffect(() => {
     if (isPlaying) {
