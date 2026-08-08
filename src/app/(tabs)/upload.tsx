@@ -35,71 +35,80 @@ export default function UploadScreen() {
   // AbortController ref to cancel upload mid-way
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  // Single-Click Upload Handler with Cancel Support
+  // Batch / Folder Upload Handler with Duplicate Checking
   const handleSelectAndUpload = async () => {
     try {
       // Create new AbortController instance
       abortControllerRef.current = new AbortController();
 
-      // 1. Open File Picker
+      // 1. Open File Picker for Multiple Songs / Folder Files
       const result = await DocumentPicker.getDocumentAsync({
         type: 'audio/*',
         copyToCacheDirectory: true,
+        multiple: true,
       });
 
       if (result.canceled || !result.assets || result.assets.length === 0) {
         return;
       }
 
-      const asset = result.assets[0];
-
+      const totalFiles = result.assets.length;
       setIsUploading(true);
-      setUploadStatus('Uploading song...');
 
-      // Check if cancelled
-      if (abortControllerRef.current?.signal.aborted) {
-        throw new Error('UPLOAD_CANCELLED');
+      let lastCreatedTrack: Track | null = null;
+      let lastMetadata: TrackMetadata | null = null;
+      let uploadedCount = 0;
+
+      for (let i = 0; i < totalFiles; i++) {
+        if (abortControllerRef.current?.signal.aborted) {
+          throw new Error('UPLOAD_CANCELLED');
+        }
+
+        const asset = result.assets[i];
+        setUploadStatus(`Uploading song ${i + 1} of ${totalFiles}...`);
+
+        // 2. Extract Real Track Metadata & Studio Cover Artwork
+        const metadata = await extractAudioFileMetadata(asset.name);
+        lastMetadata = metadata;
+        setLastUploadedTrack(metadata);
+
+        if (abortControllerRef.current?.signal.aborted) {
+          throw new Error('UPLOAD_CANCELLED');
+        }
+
+        // 3. Upload Audio File to Cloudinary CDN
+        const audioUploadRes = await uploadToCloudinary(
+          (asset as any).file || asset.uri,
+          asset.name,
+          'video'
+        );
+
+        if (abortControllerRef.current?.signal.aborted) {
+          throw new Error('UPLOAD_CANCELLED');
+        }
+
+        // 4. Save Metadata to Firestore Database (Duplicate Check automatically prevents double entries!)
+        const newTrack = await saveTrackToFirestore({
+          title: metadata.title,
+          artist: metadata.artist,
+          album: metadata.album,
+          genre: metadata.genre,
+          audioUrl: audioUploadRes.secure_url,
+          artwork: metadata.artwork,
+          duration: Math.round(audioUploadRes.duration || 210),
+          lyrics: metadata.lyrics,
+          gradient: ['#1DB954', '#0B0C10'],
+        });
+
+        lastCreatedTrack = newTrack;
+        uploadedCount++;
       }
 
-      // 2. Extract Real Track Metadata & Official Spotify Cover Artwork
-      const metadata = await extractAudioFileMetadata(asset.name);
-      setLastUploadedTrack(metadata);
+      setUploadStatus(`Upload completed! ${uploadedCount} songs saved to Database.`);
 
-      if (abortControllerRef.current?.signal.aborted) {
-        throw new Error('UPLOAD_CANCELLED');
+      if (lastCreatedTrack) {
+        setCreatedTrackObject(lastCreatedTrack);
       }
-
-      // 3. Upload Audio File to Cloudinary CDN
-      const audioUploadRes = await uploadToCloudinary(
-        (asset as any).file || asset.uri,
-        asset.name,
-        'video'
-      );
-
-      if (abortControllerRef.current?.signal.aborted) {
-        throw new Error('UPLOAD_CANCELLED');
-      }
-
-      setUploadStatus('Upload successful! Saved to Database');
-
-      // 4. Save Metadata to Firestore Database
-      const newTrack = await saveTrackToFirestore({
-        title: metadata.title,
-        artist: metadata.artist,
-        album: metadata.album,
-        genre: metadata.genre,
-        audioUrl: audioUploadRes.secure_url,
-        artwork: metadata.artwork,
-        duration: Math.round(audioUploadRes.duration || 210),
-        lyrics: metadata.lyrics,
-        gradient: ['#1DB954', '#0B0C10'],
-      });
-
-      if (abortControllerRef.current?.signal.aborted) {
-        throw new Error('UPLOAD_CANCELLED');
-      }
-
-      setCreatedTrackObject(newTrack);
       setIsUploading(false);
 
       // Trigger GPay Style Success Screen!
