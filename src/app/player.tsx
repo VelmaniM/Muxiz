@@ -121,7 +121,7 @@ export default function PlayerScreen() {
               {isPlaying && <EqualizerAnimation isPlaying={isPlaying} color={Colors.primary} size="small" barCount={3} />}
             </View>
             <Text style={styles.headerTitleText} numberOfLines={1}>
-              {currentTrack.album || 'Top Hits'}
+              {cleanTitle}
             </Text>
           </View>
 
