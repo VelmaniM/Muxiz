@@ -7,6 +7,7 @@ import { Colors } from '../../constants/colors';
 import { useAudio } from '../../context/AudioContext';
 import { ProfileDrawer } from '../../components/ProfileDrawer';
 import { useProfile } from '../../context/ProfileContext';
+import { TrackListItem } from '../../components/TrackListItem';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -72,47 +73,6 @@ export default function HomeScreen() {
     },
   ];
 
-  const moreOfWhatYouLike = [
-    {
-      id: 'rec_1',
-      title: 'Latest Dance Tamil தமிழ்',
-      artists: 'Anirudh Ravichander, Sai Abhyankkar, G. V. Prakash...',
-      cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&q=80',
-      playlistId: 'pl_latest_dance',
-    },
-    {
-      id: 'rec_2',
-      title: '00s Dance Tamil தமிழ்',
-      artists: 'KK, Devi Sri Prasad, Harris Jayaraj, Thaman S...',
-      cover: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&q=80',
-      playlistId: 'pl_00s_dance',
-    },
-    {
-      id: 'rec_3',
-      title: 'Mass Intros',
-      artists: 'Anirudh Ravichander, A. R. Rahman, Yuvan Shankar Raja...',
-      cover: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80',
-      playlistId: 'pl_mass_intros',
-    },
-  ];
-
-  const basedOnRecent = [
-    {
-      id: 'recent_1',
-      title: 'Leo / Master Hits',
-      artists: 'Anirudh Ravichander, Thalapathy Vijay',
-      cover: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=600&q=80',
-      playlistId: 'pl_leo_master',
-    },
-    {
-      id: 'recent_2',
-      title: 'Thalapathy Vijay Hits',
-      artists: 'Top Tamil Blockbuster Hits',
-      cover: 'https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=600&q=80',
-      playlistId: 'pl_vijay_hits',
-    },
-  ];
-
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <ScrollView
@@ -175,69 +135,32 @@ export default function HomeScreen() {
           ))}
         </View>
 
-        {/* Section 1: More of what you like */}
+        {/* Database Songs Section */}
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>More of what you like</Text>
+          <Text style={styles.sectionTitle}>Your Songs</Text>
         </View>
 
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.horizontalList}
-        >
-          {moreOfWhatYouLike.map((item) => (
+        {queue.length > 0 ? (
+          <View style={styles.tracksWrapper}>
+            {queue.map((track) => (
+              <TrackListItem key={track.id} track={track} playlistContext={queue} />
+            ))}
+          </View>
+        ) : (
+          <View style={styles.emptyDbBox}>
+            <Ionicons name="cloud-upload-outline" size={40} color="#666666" />
+            <Text style={styles.emptyDbTitle}>No Songs in Database Yet</Text>
+            <Text style={styles.emptyDbSubtitle}>
+              Uploaded tracks from Firestore Database will appear here live.
+            </Text>
             <Pressable
-              key={item.id}
-              style={styles.largeSquareCard}
-              onPress={() => router.push(`/playlist/${item.playlistId}` as any)}
+              style={styles.uploadNavBtn}
+              onPress={() => router.push('/upload')}
             >
-              <View style={styles.cardImageWrapper}>
-                <Image source={{ uri: item.cover }} style={styles.cardImage} />
-                <View style={styles.brandBadge}>
-                  <Ionicons name="disc" size={12} color="#1DB954" />
-                </View>
-              </View>
-              <Text style={styles.cardTitle} numberOfLines={1}>
-                {item.title}
-              </Text>
-              <Text style={styles.cardArtists} numberOfLines={2}>
-                {item.artists}
-              </Text>
+              <Text style={styles.uploadNavBtnText}>Upload Song to DB</Text>
             </Pressable>
-          ))}
-        </ScrollView>
-
-        {/* Section 2: Based on your recent listening */}
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Based on your recent listening</Text>
-        </View>
-
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.horizontalList}
-        >
-          {basedOnRecent.map((item) => (
-            <Pressable
-              key={item.id}
-              style={styles.largeSquareCard}
-              onPress={() => router.push(`/playlist/${item.playlistId}` as any)}
-            >
-              <View style={styles.cardImageWrapper}>
-                <Image source={{ uri: item.cover }} style={styles.cardImage} />
-                <View style={styles.brandBadge}>
-                  <Ionicons name="disc" size={12} color="#1DB954" />
-                </View>
-              </View>
-              <Text style={styles.cardTitle} numberOfLines={1}>
-                {item.title}
-              </Text>
-              <Text style={styles.cardArtists} numberOfLines={2}>
-                {item.artists}
-              </Text>
-            </Pressable>
-          ))}
-        </ScrollView>
+          </View>
+        )}
       </ScrollView>
 
       {/* Side Profile Drawer Modal */}
@@ -353,43 +276,41 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: '700',
   },
-  horizontalList: {
-    paddingHorizontal: 16,
-    gap: 16,
-    marginBottom: 16,
+  tracksWrapper: {
+    paddingHorizontal: 4,
   },
-  largeSquareCard: {
-    width: 156,
+  emptyDbBox: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 30,
+    backgroundColor: '#16181E',
+    marginHorizontal: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.06)',
   },
-  cardImageWrapper: {
-    width: 156,
-    height: 156,
-    borderRadius: 8,
-    overflow: 'hidden',
-    position: 'relative',
-    marginBottom: 8,
-  },
-  cardImage: {
-    width: '100%',
-    height: '100%',
-  },
-  brandBadge: {
-    position: 'absolute',
-    top: 8,
-    left: 8,
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    borderRadius: 10,
-    padding: 3,
-  },
-  cardTitle: {
+  emptyDbTitle: {
     color: '#FFFFFF',
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '700',
-    marginBottom: 2,
+    marginTop: 12,
   },
-  cardArtists: {
-    color: Colors.textSecondary,
-    fontSize: 12,
-    lineHeight: 16,
+  emptyDbSubtitle: {
+    color: '#999999',
+    fontSize: 13,
+    textAlign: 'center',
+    marginTop: 4,
+  },
+  uploadNavBtn: {
+    backgroundColor: '#1DB954',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+    marginTop: 16,
+  },
+  uploadNavBtnText: {
+    color: '#000000',
+    fontSize: 13,
+    fontWeight: '700',
   },
 });

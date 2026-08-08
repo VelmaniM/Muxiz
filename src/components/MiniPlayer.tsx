@@ -5,6 +5,8 @@ import { useRouter } from 'expo-router';
 import { useAudio } from '../context/AudioContext';
 import { Colors } from '../constants/colors';
 
+import { getCleanTitleOnly } from '../services/metadataService';
+
 export const MiniPlayer: React.FC = () => {
   const router = useRouter();
   const { currentTrack, isPlaying, togglePlayPause, nextTrack, positionMillis, durationMillis } = useAudio();
@@ -12,6 +14,7 @@ export const MiniPlayer: React.FC = () => {
   if (!currentTrack) return null;
 
   const progressPercent = durationMillis > 0 ? (positionMillis / durationMillis) * 100 : 0;
+  const cleanTitle = getCleanTitleOnly(currentTrack.title);
 
   return (
     <Pressable style={styles.container} onPress={() => router.push('/player')}>
@@ -27,7 +30,7 @@ export const MiniPlayer: React.FC = () => {
         {/* Track Title & Artist */}
         <View style={styles.textContainer}>
           <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
-            {currentTrack.title}
+            {cleanTitle}
           </Text>
           <Text style={styles.artist} numberOfLines={1} ellipsizeMode="tail">
             {currentTrack.artist}

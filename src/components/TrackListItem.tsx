@@ -8,6 +8,8 @@ import { useAudio } from '../context/AudioContext';
 import { EqualizerAnimation } from './EqualizerAnimation';
 import { Colors } from '../constants/colors';
 
+import { getCleanTitleOnly } from '../services/metadataService';
+
 interface TrackListItemProps {
   track: Track;
   playlistContext?: Track[];
@@ -45,7 +47,7 @@ export const TrackListItem: React.FC<TrackListItemProps> = ({ track, playlistCon
     try {
       setShowOptionsModal(false);
       await Share.share({
-        message: `Listen to "${track.title}" by ${track.artist} on Expo Music! ${track.audioUrl}`,
+        message: `Listen to "${getCleanTitleOnly(track.title)}" by ${track.artist} on Muxiz! ${track.audioUrl}`,
       });
     } catch (err) {
       console.log('Share error:', err);
@@ -55,13 +57,15 @@ export const TrackListItem: React.FC<TrackListItemProps> = ({ track, playlistCon
   const handleAddToQueue = () => {
     addToQueue(track);
     setShowOptionsModal(false);
-    Alert.alert('Added to Queue', `"${track.title}" added to your queue.`);
+    Alert.alert('Added to Queue', `"${getCleanTitleOnly(track.title)}" added to your queue.`);
   };
 
   const handleGoToQueue = () => {
     setShowOptionsModal(false);
     router.push('/player');
   };
+
+  const cleanTitle = getCleanTitleOnly(track.title);
 
   return (
     <>
@@ -83,7 +87,7 @@ export const TrackListItem: React.FC<TrackListItemProps> = ({ track, playlistCon
         {/* Info */}
         <View style={styles.infoContainer}>
           <Text style={[styles.title, isCurrentTrack && { color: Colors.primary }]} numberOfLines={1}>
-            {track.title}
+            {cleanTitle}
           </Text>
           <Text style={styles.artist} numberOfLines={1}>
             {track.artist}
@@ -137,7 +141,7 @@ export const TrackListItem: React.FC<TrackListItemProps> = ({ track, playlistCon
               <Image source={{ uri: track.artwork }} style={styles.sheetArtwork} />
               <View style={styles.sheetMetaWrapper}>
                 <Text style={styles.sheetTitle} numberOfLines={1}>
-                  {track.title}
+                  {cleanTitle}
                 </Text>
                 <Text style={styles.sheetArtist} numberOfLines={1}>
                   {track.artist}

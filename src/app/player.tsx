@@ -19,6 +19,7 @@ import Slider from '@react-native-community/slider';
 import { useAudio } from '../context/AudioContext';
 import { EqualizerAnimation } from '../components/EqualizerAnimation';
 import { Colors } from '../constants/colors';
+import { getCleanTitleOnly } from '../services/metadataService';
 
 const { width } = Dimensions.get('window');
 
@@ -101,6 +102,8 @@ export default function PlayerScreen() {
     ? Math.floor((positionMillis / durationMillis) * lyricLines.length)
     : 0;
 
+  const cleanTitle = getCleanTitleOnly(currentTrack.title);
+
   return (
     <View style={styles.container}>
       <LinearGradient colors={backgroundGradients} style={StyleSheet.absoluteFill} />
@@ -122,7 +125,7 @@ export default function PlayerScreen() {
             </Text>
           </View>
 
-          {/* Three Dots -> Opens Spotify More Options Sheet */}
+          {/* Three Dots -> Opens More Options Sheet */}
           <Pressable style={styles.headerButton} onPress={() => setShowMoreOptionsModal(true)}>
             <Ionicons name="ellipsis-horizontal" size={24} color={Colors.textPrimary} />
           </Pressable>
@@ -137,11 +140,11 @@ export default function PlayerScreen() {
             <Image source={{ uri: currentTrack.artwork }} style={styles.artwork} />
           </View>
 
-          {/* Song Title, Artist & Action Icons */}
+          {/* Song Title & Action Icons */}
           <View style={styles.infoRow}>
             <View style={styles.trackDetails}>
               <Text style={styles.trackTitle} numberOfLines={1}>
-                {currentTrack.title}
+                {cleanTitle}
               </Text>
               <Text style={styles.artistName} numberOfLines={1}>
                 {currentTrack.artist}
@@ -156,87 +159,79 @@ export default function PlayerScreen() {
                   color={isLiked ? Colors.primary : Colors.textPrimary}
                 />
               </Pressable>
-              <Pressable style={styles.iconPad} onPress={() => Alert.alert('Saved', `Added "${currentTrack.title}" to library`)}>
-                <Ionicons name="add-circle-outline" size={26} color={Colors.textPrimary} />
-              </Pressable>
             </View>
           </View>
 
-          {/* Audio Scrubber Slider */}
-          <View style={styles.sliderContainer}>
-            <Slider
-              style={styles.slider}
-              minimumValue={0}
-              maximumValue={durationMillis || 1}
-              value={positionMillis}
-              minimumTrackTintColor={Colors.textPrimary}
-              maximumTrackTintColor="rgba(255, 255, 255, 0.2)"
-              thumbTintColor={Colors.textPrimary}
-              onSlidingComplete={(value) => seekTo(value)}
-            />
-            <View style={styles.timeRow}>
+          {/* Progress Slider Bar */}
+          <View style={styles.progressContainer}>
+            <View style={styles.progressBarWrapper}>
+              <View style={styles.progressBarTrack}>
+                <View style={[styles.progressBarFill, { width: `${Math.min(100, Math.max(0, progressPercent))}%` }]} />
+                <View style={[styles.progressKnob, { left: `${Math.min(100, Math.max(0, progressPercent))}%` }]} />
+              </View>
+            </View>
+
+            <View style={styles.timeLabelsRow}>
               <Text style={styles.timeText}>{formatTime(positionMillis)}</Text>
-              <Text style={styles.timeText}>
-                {formatRemainingTime(positionMillis, durationMillis)}
-              </Text>
+              <Text style={styles.timeText}>{formatRemainingTime(positionMillis, durationMillis)}</Text>
             </View>
           </View>
 
-          {/* Main Controls Row */}
-          <View style={styles.controlsRow}>
-            <Pressable onPress={toggleShuffle} style={styles.iconPad}>
+          {/* Main Playback Controls */}
+          <View style={styles.mainControlsRow}>
+            <Pressable onPress={toggleShuffle} style={styles.controlIconPad}>
               <Ionicons
                 name="shuffle"
-                size={24}
-                color={isShuffle ? Colors.primary : Colors.textMuted}
+                size={22}
+                color={isShuffle ? Colors.primary : Colors.textSecondary}
               />
             </Pressable>
 
-            <Pressable onPress={previousTrack} style={styles.iconPad}>
+            <Pressable onPress={previousTrack} style={styles.controlIconPad}>
               <Ionicons name="play-skip-back" size={32} color={Colors.textPrimary} />
             </Pressable>
 
-            <Pressable style={styles.playButton} onPress={togglePlayPause}>
+            <Pressable onPress={togglePlayPause} style={styles.playPauseCircleBtn}>
               <Ionicons
                 name={isPlaying ? 'pause' : 'play'}
                 size={34}
                 color="#000000"
-                style={{ marginLeft: isPlaying ? 0 : 4 }}
+                style={isPlaying ? {} : { marginLeft: 3 }}
               />
             </Pressable>
 
-            <Pressable onPress={nextTrack} style={styles.iconPad}>
+            <Pressable onPress={nextTrack} style={styles.controlIconPad}>
               <Ionicons name="play-skip-forward" size={32} color={Colors.textPrimary} />
             </Pressable>
 
-            <Pressable onPress={toggleRepeat} style={styles.iconPad}>
+            <Pressable onPress={toggleRepeat} style={styles.controlIconPad}>
               <Ionicons
                 name={repeatMode === 'one' ? 'repeat-outline' : 'repeat'}
-                size={24}
-                color={repeatMode !== 'off' ? Colors.primary : Colors.textMuted}
+                size={22}
+                color={repeatMode !== 'off' ? Colors.primary : Colors.textSecondary}
               />
             </Pressable>
           </View>
 
-          {/* Utility Action Row */}
-          <View style={styles.utilityRow}>
-            <Pressable style={styles.utilityIcon}>
-              <Ionicons name="hardware-chip-outline" size={22} color={Colors.textSecondary} />
+          {/* Bottom Utility Actions Bar */}
+          <View style={styles.bottomUtilitiesRow}>
+            {/* Devices Connect Icon */}
+            <Pressable style={styles.utilityIcon} onPress={() => Alert.alert('Connect Device', 'AirPlay & Bluetooth Streaming Ready')}>
+              <Ionicons name="hardware-chip-outline" size={20} color={Colors.textSecondary} />
             </Pressable>
 
-            <View style={styles.utilityRightGroup}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
+              {/* Share Icon */}
               <Pressable style={styles.utilityIcon} onPress={handleShare}>
                 <Ionicons name="share-outline" size={22} color={Colors.textSecondary} />
               </Pressable>
 
-              {/* Queue Icon -> Opens Spotify Queue Modal */}
+              {/* Queue Icon */}
               <Pressable style={styles.utilityIcon} onPress={() => setShowQueueModal(true)}>
                 <Ionicons name="list" size={22} color={Colors.textSecondary} />
               </Pressable>
             </View>
           </View>
-
-
         </ScrollView>
       </SafeAreaView>
 
