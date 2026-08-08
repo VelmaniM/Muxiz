@@ -101,6 +101,10 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         navigator.mediaSession.setActionHandler('pause', () => { togglePlayPause(); });
         navigator.mediaSession.setActionHandler('previoustrack', () => { previousTrack(); });
         navigator.mediaSession.setActionHandler('nexttrack', () => { nextTrack(); });
+
+        // Disable 10-second seek buttons so iOS Lock Screen shows Next Track (>>|) & Previous Track (|<<) buttons
+        try { navigator.mediaSession.setActionHandler('seekbackward', null); } catch (e) {}
+        try { navigator.mediaSession.setActionHandler('seekforward', null); } catch (e) {}
       } catch (err) {
         console.log('MediaSession config:', err);
       }
