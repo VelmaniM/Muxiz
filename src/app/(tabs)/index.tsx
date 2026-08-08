@@ -7,7 +7,6 @@ import { Colors } from '../../constants/colors';
 import { useAudio } from '../../context/AudioContext';
 import { ProfileDrawer } from '../../components/ProfileDrawer';
 import { useProfile } from '../../context/ProfileContext';
-import { TrackListItem } from '../../components/TrackListItem';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -18,14 +17,111 @@ export default function HomeScreen() {
 
   const categories = ['All', 'Music', 'Podcasts'];
 
+  const homeGridCards = [
+    {
+      id: 'grid_1',
+      title: queue.length > 0 ? queue[0].title : 'Newly Added',
+      cover:
+        queue.length > 0
+          ? queue[0].artwork
+          : 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&q=80',
+      isLivePlaying: true,
+      playlistId: 'pl_newly_added',
+    },
+    {
+      id: 'grid_2',
+      title: 'Sai Abhyankkar Mix',
+      cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&q=80',
+      playlistId: 'pl_sai_abhyankkar',
+    },
+    {
+      id: 'grid_3',
+      title: 'Paruthiveeran',
+      cover: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&q=80',
+      playlistId: 'pl_paruthiveeran',
+    },
+    {
+      id: 'grid_4',
+      title: 'Trending Now Tamil',
+      cover: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80',
+      playlistId: 'pl_trending_tamil',
+    },
+    {
+      id: 'grid_5',
+      title: 'DC (Original Motion Picture Soundtrack)',
+      cover: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=600&q=80',
+      playlistId: 'pl_dc_soundtrack',
+    },
+    {
+      id: 'grid_6',
+      title: 'Goindhamma (From "Meesaya Murukku...")',
+      cover: 'https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=600&q=80',
+      playlistId: 'pl_goindhamma',
+    },
+    {
+      id: 'grid_7',
+      title: 'Pakka Local',
+      cover: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&q=80',
+      playlistId: 'pl_pakka_local',
+    },
+    {
+      id: 'grid_8',
+      title: 'Sajanka',
+      cover: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80',
+      playlistId: 'pl_sajanka',
+    },
+  ];
+
+  const moreOfWhatYouLike = [
+    {
+      id: 'rec_1',
+      title: 'Latest Dance Tamil தமிழ்',
+      artists: 'Anirudh Ravichander, Sai Abhyankkar, G. V. Prakash...',
+      cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&q=80',
+      playlistId: 'pl_latest_dance',
+    },
+    {
+      id: 'rec_2',
+      title: '00s Dance Tamil தமிழ்',
+      artists: 'KK, Devi Sri Prasad, Harris Jayaraj, Thaman S...',
+      cover: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&q=80',
+      playlistId: 'pl_00s_dance',
+    },
+    {
+      id: 'rec_3',
+      title: 'Mass Intros',
+      artists: 'Anirudh Ravichander, A. R. Rahman, Yuvan Shankar Raja...',
+      cover: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80',
+      playlistId: 'pl_mass_intros',
+    },
+  ];
+
+  const basedOnRecent = [
+    {
+      id: 'recent_1',
+      title: 'Leo / Master Hits',
+      artists: 'Anirudh Ravichander, Thalapathy Vijay',
+      cover: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=600&q=80',
+      playlistId: 'pl_leo_master',
+    },
+    {
+      id: 'recent_2',
+      title: 'Thalapathy Vijay Hits',
+      artists: 'Top Tamil Blockbuster Hits',
+      cover: 'https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=600&q=80',
+      playlistId: 'pl_vijay_hits',
+    },
+  ];
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        {/* Header Bar */}
+        {/* Top Header Row */}
         <View style={styles.headerRow}>
+          {/* Avatar -> Opens Side Profile Drawer */}
           <Pressable style={styles.avatarBtn} onPress={() => setShowDrawer(true)}>
             {profileImage ? (
               <Image source={{ uri: profileImage }} style={styles.avatarImgSmall} />
@@ -34,6 +130,7 @@ export default function HomeScreen() {
             )}
           </Pressable>
 
+          {/* Category Filter Pills */}
           <View style={styles.pillsRow}>
             {categories.map((cat) => (
               <Pressable
@@ -57,49 +154,90 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* Essential Playlist Banner */}
-        <Pressable
-          style={styles.playlistBannerCard}
-          onPress={() => router.push('/playlist/pl_newly_added')}
-        >
-          <View style={styles.bannerIconBox}>
-            <Ionicons name="musical-notes" size={28} color="#1DB954" />
-          </View>
-          <View style={styles.bannerTextGroup}>
-            <Text style={styles.bannerTitle}>Newly Added</Text>
-            <Text style={styles.bannerSubtitle}>
-              {queue.length > 0 ? `${queue.length} songs available` : 'Upload tracks to your library'}
-            </Text>
-          </View>
-          <Ionicons name="chevron-forward" size={22} color="#999999" />
-        </Pressable>
-
-        {/* Songs List */}
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Songs</Text>
+        {/* 2x4 Grid Container (8 Grid Cards) */}
+        <View style={styles.gridContainer}>
+          {homeGridCards.map((item) => (
+            <Pressable
+              key={item.id}
+              style={styles.gridCard}
+              onPress={() => router.push(`/playlist/${item.playlistId}` as any)}
+            >
+              <Image source={{ uri: item.cover }} style={styles.gridImage} />
+              <View style={styles.gridTextWrapper}>
+                <Text style={styles.gridTitle} numberOfLines={2}>
+                  {item.title}
+                </Text>
+                {item.isLivePlaying && (
+                  <Ionicons name="ellipsis-horizontal" size={14} color="#1DB954" style={styles.gridLiveIcon} />
+                )}
+              </View>
+            </Pressable>
+          ))}
         </View>
 
-        {queue.length > 0 ? (
-          <View style={styles.tracksWrapper}>
-            {queue.map((track) => (
-              <TrackListItem key={track.id} track={track} playlistContext={queue} />
-            ))}
-          </View>
-        ) : (
-          <View style={styles.emptyStateContainer}>
-            <Ionicons name="cloud-upload-outline" size={48} color="#555555" />
-            <Text style={styles.emptyStateTitle}>No Songs Yet</Text>
-            <Text style={styles.emptyStateSubtitle}>
-              Tap the Upload tab to add MP3 tracks to your library.
-            </Text>
+        {/* Section 1: More of what you like */}
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>More of what you like</Text>
+        </View>
+
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.horizontalList}
+        >
+          {moreOfWhatYouLike.map((item) => (
             <Pressable
-              style={styles.uploadNowBtn}
-              onPress={() => router.push('/upload')}
+              key={item.id}
+              style={styles.largeSquareCard}
+              onPress={() => router.push(`/playlist/${item.playlistId}` as any)}
             >
-              <Text style={styles.uploadNowBtnText}>Upload Songs</Text>
+              <View style={styles.cardImageWrapper}>
+                <Image source={{ uri: item.cover }} style={styles.cardImage} />
+                <View style={styles.brandBadge}>
+                  <Ionicons name="disc" size={12} color="#1DB954" />
+                </View>
+              </View>
+              <Text style={styles.cardTitle} numberOfLines={1}>
+                {item.title}
+              </Text>
+              <Text style={styles.cardArtists} numberOfLines={2}>
+                {item.artists}
+              </Text>
             </Pressable>
-          </View>
-        )}
+          ))}
+        </ScrollView>
+
+        {/* Section 2: Based on your recent listening */}
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Based on your recent listening</Text>
+        </View>
+
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.horizontalList}
+        >
+          {basedOnRecent.map((item) => (
+            <Pressable
+              key={item.id}
+              style={styles.largeSquareCard}
+              onPress={() => router.push(`/playlist/${item.playlistId}` as any)}
+            >
+              <View style={styles.cardImageWrapper}>
+                <Image source={{ uri: item.cover }} style={styles.cardImage} />
+                <View style={styles.brandBadge}>
+                  <Ionicons name="disc" size={12} color="#1DB954" />
+                </View>
+              </View>
+              <Text style={styles.cardTitle} numberOfLines={1}>
+                {item.title}
+              </Text>
+              <Text style={styles.cardArtists} numberOfLines={2}>
+                {item.artists}
+              </Text>
+            </Pressable>
+          ))}
+        </ScrollView>
       </ScrollView>
 
       {/* Side Profile Drawer Modal */}
@@ -163,86 +301,95 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
 
-  /* Banner Card */
-  playlistBannerCard: {
+  /* 2x4 Grid Container */
+  gridContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    paddingHorizontal: 16,
+    justifyContent: 'space-between',
+    gap: 8,
+    marginTop: 4,
+    marginBottom: 16,
+  },
+  gridCard: {
+    width: '48.5%',
+    height: 56,
+    backgroundColor: '#2A2A2A',
+    borderRadius: 6,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1C1D22',
-    marginHorizontal: 16,
-    marginVertical: 12,
-    padding: 14,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.06)',
+    overflow: 'hidden',
   },
-  bannerIconBox: {
-    width: 48,
-    height: 48,
-    borderRadius: 8,
-    backgroundColor: 'rgba(29, 185, 84, 0.15)',
-    alignItems: 'center',
-    justifyContent: 'center',
+  gridImage: {
+    width: 56,
+    height: 56,
   },
-  bannerTextGroup: {
+  gridTextWrapper: {
     flex: 1,
-    marginLeft: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
   },
-  bannerTitle: {
+  gridTitle: {
     color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  bannerSubtitle: {
-    color: '#999999',
     fontSize: 13,
-    marginTop: 2,
+    fontWeight: '700',
+    flex: 1,
+    marginRight: 4,
+  },
+  gridLiveIcon: {
+    marginLeft: 4,
   },
 
-  /* Sections */
+  /* Section Styles */
   sectionHeader: {
     paddingHorizontal: 16,
-    marginTop: 16,
-    marginBottom: 8,
+    marginTop: 12,
+    marginBottom: 12,
   },
   sectionTitle: {
     color: '#FFFFFF',
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: '700',
   },
-  tracksWrapper: {
-    paddingHorizontal: 4,
+  horizontalList: {
+    paddingHorizontal: 16,
+    gap: 16,
+    marginBottom: 16,
   },
-
-  /* Empty State */
-  emptyStateContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 32,
-    paddingVertical: 60,
+  largeSquareCard: {
+    width: 156,
   },
-  emptyStateTitle: {
+  cardImageWrapper: {
+    width: 156,
+    height: 156,
+    borderRadius: 8,
+    overflow: 'hidden',
+    position: 'relative',
+    marginBottom: 8,
+  },
+  cardImage: {
+    width: '100%',
+    height: '100%',
+  },
+  brandBadge: {
+    position: 'absolute',
+    top: 8,
+    left: 8,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    borderRadius: 10,
+    padding: 3,
+  },
+  cardTitle: {
     color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '700',
-    marginTop: 16,
-  },
-  emptyStateSubtitle: {
-    color: '#999999',
-    fontSize: 14,
-    textAlign: 'center',
-    marginTop: 6,
-    lineHeight: 20,
-  },
-  uploadNowBtn: {
-    backgroundColor: '#1DB954',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 24,
-    marginTop: 20,
-  },
-  uploadNowBtnText: {
-    color: '#000000',
     fontSize: 14,
     fontWeight: '700',
+    marginBottom: 2,
+  },
+  cardArtists: {
+    color: Colors.textSecondary,
+    fontSize: 12,
+    lineHeight: 16,
   },
 });
