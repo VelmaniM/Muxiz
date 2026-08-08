@@ -54,7 +54,7 @@ export default function UploadScreen() {
       const asset = result.assets[0];
 
       setIsUploading(true);
-      setUploadStatus('1/3 Reading track details...');
+      setUploadStatus('Uploading song...');
 
       // Check if cancelled
       if (abortControllerRef.current?.signal.aborted) {
@@ -64,8 +64,6 @@ export default function UploadScreen() {
       // 2. Extract Real Track Metadata & Official Spotify Cover Artwork
       const metadata = await extractAudioFileMetadata(asset.name);
       setLastUploadedTrack(metadata);
-
-      setUploadStatus('2/3 Uploading audio to Cloudinary CDN...');
 
       if (abortControllerRef.current?.signal.aborted) {
         throw new Error('UPLOAD_CANCELLED');
@@ -82,7 +80,7 @@ export default function UploadScreen() {
         throw new Error('UPLOAD_CANCELLED');
       }
 
-      setUploadStatus('3/3 Publishing to Firebase Firestore DB...');
+      setUploadStatus('Upload successful! Saved to Database');
 
       // 4. Save Metadata to Firestore Database
       const newTrack = await saveTrackToFirestore({
@@ -146,7 +144,7 @@ export default function UploadScreen() {
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Add to Library</Text>
           <Text style={styles.headerSubtitle}>
-            Upload MP3 tracks directly to your Spotify & Apple Music cloud
+            Upload MP3 tracks directly to your Muxiz cloud
           </Text>
         </View>
 

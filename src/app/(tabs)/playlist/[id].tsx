@@ -97,13 +97,12 @@ export default function PlaylistDetailScreen() {
     }
   };
 
-  // Dynamic Artist Subtitle & Total Duration Calculation
-  const dynamicSubtitle =
-    playlist.subtitle && playlist.subtitle !== 'Vidyasagar Mix'
-      ? playlist.subtitle
-      : Array.from(new Set(rawTracks.map((t) => t.artist)))
-          .slice(0, 3)
-          .join(', ');
+  // Extract artist names ONLY if tracks exist in this specific playlist
+  const playlistArtistNames = Array.from(
+    new Set(rawTracks.map((t) => t.artist).filter(Boolean))
+  )
+    .slice(0, 4)
+    .join(', ');
 
   const totalDurationSecs = rawTracks.reduce((acc, t) => acc + (t.duration || 210), 0);
   const durationHours = Math.floor(totalDurationSecs / 3600);
@@ -179,16 +178,18 @@ export default function PlaylistDetailScreen() {
 
         {/* Dynamic Playlist Meta Details */}
         <View style={styles.metaSection}>
-          <Text style={styles.artistsText} numberOfLines={2}>
-            {dynamicSubtitle}
-          </Text>
+          {playlistArtistNames.length > 0 ? (
+            <Text style={styles.artistsText} numberOfLines={2}>
+              {playlistArtistNames}
+            </Text>
+          ) : null}
 
-          {/* Spotify Brand Row */}
+          {/* Brand Row */}
           <View style={styles.spotifyBrandRow}>
             <View style={styles.spotifyGreenCircle}>
-              <Ionicons name="logo-octocat" size={12} color="#000000" />
+              <Ionicons name="disc" size={12} color="#000000" />
             </View>
-            <Text style={styles.spotifyBrandText}>Spotify</Text>
+            <Text style={styles.spotifyBrandText}>Muxiz</Text>
           </View>
 
           <Text style={styles.aboutText}>

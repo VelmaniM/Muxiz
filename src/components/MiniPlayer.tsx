@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useAudio } from '../context/AudioContext';
-import { EqualizerAnimation } from './EqualizerAnimation';
 import { Colors } from '../constants/colors';
 
 export const MiniPlayer: React.FC = () => {
@@ -27,14 +26,11 @@ export const MiniPlayer: React.FC = () => {
 
         {/* Track Title & Artist */}
         <View style={styles.textContainer}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-            <Text style={[styles.title, { flexShrink: 1 }]} numberOfLines={1} ellipsizeMode="tail">
-              {currentTrack.title}
-            </Text>
-            {isPlaying && <EqualizerAnimation isPlaying={isPlaying} color={Colors.primary} size="small" barCount={3} />}
-          </View>
+          <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
+            {currentTrack.title}
+          </Text>
           <Text style={styles.artist} numberOfLines={1} ellipsizeMode="tail">
-            {currentTrack.artist} • {currentTrack.album}
+            {currentTrack.artist}
           </Text>
         </View>
 

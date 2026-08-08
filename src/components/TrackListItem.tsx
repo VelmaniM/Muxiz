@@ -82,7 +82,7 @@ export const TrackListItem: React.FC<TrackListItemProps> = ({ track, playlistCon
             {track.title}
           </Text>
           <Text style={styles.artist} numberOfLines={1}>
-            {track.artist} • {track.album}
+            {track.artist}
           </Text>
         </View>
 
@@ -136,7 +136,7 @@ export const TrackListItem: React.FC<TrackListItemProps> = ({ track, playlistCon
                   {track.title}
                 </Text>
                 <Text style={styles.sheetArtist} numberOfLines={1}>
-                  {track.artist} • {track.album}
+                  {track.artist}
                 </Text>
               </View>
             </View>

@@ -70,7 +70,7 @@ export default function PlayerScreen() {
   const handleShare = async () => {
     try {
       await Share.share({
-        message: `Listening to "${currentTrack.title}" by ${currentTrack.artist} on Spotify & Apple Music!`,
+        message: `Listening to "${currentTrack.title}" by ${currentTrack.artist} on Muxiz!`,
       });
     } catch (error) {
       console.log('Error sharing:', error);

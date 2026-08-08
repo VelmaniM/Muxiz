@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Spotify & Apple Music",
-    "slug": "spotify-apple-music",
+    "name": "Muxiz",
+    "slug": "muxiz-music",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

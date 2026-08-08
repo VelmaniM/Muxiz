@@ -7,96 +7,16 @@ import { Colors } from '../../constants/colors';
 import { useAudio } from '../../context/AudioContext';
 import { ProfileDrawer } from '../../components/ProfileDrawer';
 import { useProfile } from '../../context/ProfileContext';
+import { TrackListItem } from '../../components/TrackListItem';
 
 export default function HomeScreen() {
   const router = useRouter();
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [showDrawer, setShowDrawer] = useState(false);
-  const { playTrack, queue } = useAudio();
+  const { queue } = useAudio();
   const { profileImage } = useProfile();
 
   const categories = ['All', 'Music', 'Podcasts'];
-
-  const homeGridCards = [
-    {
-      id: 'grid_1',
-      title: queue.length > 0 ? queue[0].title : 'Newly Added',
-      subtitle: queue.length > 0 ? queue[0].artist : 'Latest Uploads',
-      cover: queue.length > 0 ? queue[0].artwork : 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&q=80',
-      isLivePlaying: true,
-    },
-    {
-      id: 'grid_2',
-      title: 'Sai Abhyankkar Mix',
-      cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&q=80',
-    },
-    {
-      id: 'grid_3',
-      title: 'Paruthiveeran',
-      cover: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&q=80',
-    },
-    {
-      id: 'grid_4',
-      title: 'Trending Now Tamil',
-      cover: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80',
-    },
-    {
-      id: 'grid_5',
-      title: 'DC (Original Motion Picture Soundtrack)',
-      cover: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=600&q=80',
-    },
-    {
-      id: 'grid_6',
-      title: 'Goindhamma (From "Meesaya Murukku...")',
-      cover: 'https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=600&q=80',
-    },
-    {
-      id: 'grid_7',
-      title: 'Pakka Local',
-      cover: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&q=80',
-    },
-    {
-      id: 'grid_8',
-      title: 'Sajanka',
-      cover: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80',
-    },
-  ];
-
-  const moreOfWhatYouLike = [
-    {
-      id: 'rec_1',
-      title: 'Latest Dance Tamil தமிழ்',
-      artists: 'Anirudh Ravichander, Sai Abhyankkar, G. V. Prakash...',
-      cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&q=80',
-    },
-    {
-      id: 'rec_2',
-      title: '00s Dance Tamil தமிழ்',
-      artists: 'KK, Devi Sri Prasad, Harris Jayaraj, Thaman S...',
-      cover: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&q=80',
-    },
-    {
-      id: 'rec_3',
-      title: 'Mass Intros',
-      artists: 'Anirudh Ravichander, A. R. Rahman, Yuvan Shankar Raja...',
-      cover: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80',
-    },
-  ];
-
-  const basedOnRecent = [
-    {
-      id: 'recent_1',
-      title: 'Leo / Master Hits',
-      artists: 'Anirudh Ravichander, Thalapathy Vijay',
-      cover: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=600&q=80',
-    },
-    {
-      id: 'recent_2',
-      title: 'Thalapathy Vijay Hits',
-      artists: 'Top Tamil Blockbuster Hits',
-      cover: 'https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=600&q=80',
-    },
-  ];
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -104,9 +24,8 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        {/* Top Header matching Spotify Screenshot */}
+        {/* Header Bar */}
         <View style={styles.headerRow}>
-          {/* Ninja Avatar -> Opens Side Profile Drawer */}
           <Pressable style={styles.avatarBtn} onPress={() => setShowDrawer(true)}>
             {profileImage ? (
               <Image source={{ uri: profileImage }} style={styles.avatarImgSmall} />
@@ -115,7 +34,6 @@ export default function HomeScreen() {
             )}
           </Pressable>
 
-          {/* Category Filter Pills */}
           <View style={styles.pillsRow}>
             {categories.map((cat) => (
               <Pressable
@@ -139,90 +57,49 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* 2x4 Grid Container (8 Grid Cards) */}
-        <View style={styles.gridContainer}>
-          {homeGridCards.map((item) => (
-            <Pressable
-              key={item.id}
-              style={styles.gridCard}
-              onPress={() => router.push('/playlist/pl_newly_added')}
-            >
-              <Image source={{ uri: item.cover }} style={styles.gridImage} />
-              <View style={styles.gridTextWrapper}>
-                <Text style={styles.gridTitle} numberOfLines={2}>
-                  {item.title}
-                </Text>
-                {item.isLivePlaying && (
-                  <Ionicons name="ellipsis-horizontal" size={14} color="#1DB954" style={styles.gridLiveIcon} />
-                )}
-              </View>
-            </Pressable>
-          ))}
-        </View>
-
-        {/* Section 1: More of what you like */}
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>More of what you like</Text>
-        </View>
-
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.horizontalList}
+        {/* Essential Playlist Banner */}
+        <Pressable
+          style={styles.playlistBannerCard}
+          onPress={() => router.push('/playlist/pl_newly_added')}
         >
-          {moreOfWhatYouLike.map((item) => (
-            <Pressable
-              key={item.id}
-              style={styles.largeSquareCard}
-              onPress={() => router.push('/playlist/pl_newly_added')}
-            >
-              <View style={styles.cardImageWrapper}>
-                <Image source={{ uri: item.cover }} style={styles.cardImage} />
-                <View style={styles.spotifyBadge}>
-                  <Ionicons name="logo-octocat" size={12} color="#1DB954" />
-                </View>
-              </View>
-              <Text style={styles.cardTitle} numberOfLines={1}>
-                {item.title}
-              </Text>
-              <Text style={styles.cardArtists} numberOfLines={2}>
-                {item.artists}
-              </Text>
-            </Pressable>
-          ))}
-        </ScrollView>
+          <View style={styles.bannerIconBox}>
+            <Ionicons name="musical-notes" size={28} color="#1DB954" />
+          </View>
+          <View style={styles.bannerTextGroup}>
+            <Text style={styles.bannerTitle}>Newly Added</Text>
+            <Text style={styles.bannerSubtitle}>
+              {queue.length > 0 ? `${queue.length} songs available` : 'Upload tracks to your library'}
+            </Text>
+          </View>
+          <Ionicons name="chevron-forward" size={22} color="#999999" />
+        </Pressable>
 
-        {/* Section 2: Based on your recent listening */}
+        {/* Songs List */}
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Based on your recent listening</Text>
+          <Text style={styles.sectionTitle}>Songs</Text>
         </View>
 
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.horizontalList}
-        >
-          {basedOnRecent.map((item) => (
+        {queue.length > 0 ? (
+          <View style={styles.tracksWrapper}>
+            {queue.map((track) => (
+              <TrackListItem key={track.id} track={track} playlistContext={queue} />
+            ))}
+          </View>
+        ) : (
+          <View style={styles.emptyStateContainer}>
+            <Ionicons name="cloud-upload-outline" size={48} color="#555555" />
+            <Text style={styles.emptyStateTitle}>No Songs Yet</Text>
+            <Text style={styles.emptyStateSubtitle}>
+              Tap the Upload tab to add MP3 tracks to your library.
+            </Text>
             <Pressable
-              key={item.id}
-              style={styles.largeSquareCard}
-              onPress={() => router.push('/playlist/pl_newly_added')}
+              style={styles.uploadNowBtn}
+              onPress={() => router.push('/upload')}
             >
-              <View style={styles.cardImageWrapper}>
-                <Image source={{ uri: item.cover }} style={styles.cardImage} />
-                <View style={styles.spotifyBadge}>
-                  <Ionicons name="logo-octocat" size={12} color="#1DB954" />
-                </View>
-              </View>
-              <Text style={styles.cardTitle} numberOfLines={1}>
-                {item.title}
-              </Text>
-              <Text style={styles.cardArtists} numberOfLines={2}>
-                {item.artists}
-              </Text>
+              <Text style={styles.uploadNowBtnText}>Upload Songs</Text>
             </Pressable>
-          ))}
-        </ScrollView>
+          </View>
+        )}
       </ScrollView>
 
       {/* Side Profile Drawer Modal */}
@@ -244,7 +121,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingTop: 10,
-    paddingBottom: 8,
+    paddingBottom: 12,
     gap: 12,
   },
   avatarBtn: {
@@ -254,21 +131,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#333333',
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  avatarEmoji: {
+    fontSize: 18,
   },
   avatarImgSmall: {
     width: 36,
     height: 36,
     borderRadius: 18,
   },
-  avatarEmoji: {
-    fontSize: 18,
-  },
   pillsRow: {
     flexDirection: 'row',
     gap: 8,
   },
   pillChip: {
-    backgroundColor: '#282828',
+    backgroundColor: '#2A2A2A',
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
@@ -279,93 +157,92 @@ const styles = StyleSheet.create({
   pillText: {
     color: '#FFFFFF',
     fontSize: 13,
-    fontWeight: '700',
+    fontWeight: '600',
   },
   activePillText: {
     color: '#000000',
   },
-  gridContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingHorizontal: 12,
-    marginTop: 12,
-    gap: 8,
-  },
-  gridCard: {
-    width: '48.5%',
-    height: 56,
-    backgroundColor: '#282828',
-    borderRadius: 6,
+
+  /* Banner Card */
+  playlistBannerCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    overflow: 'hidden',
+    backgroundColor: '#1C1D22',
+    marginHorizontal: 16,
+    marginVertical: 12,
+    padding: 14,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.06)',
   },
-  gridImage: {
-    width: 56,
-    height: 56,
+  bannerIconBox: {
+    width: 48,
+    height: 48,
+    borderRadius: 8,
+    backgroundColor: 'rgba(29, 185, 84, 0.15)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  gridTextWrapper: {
+  bannerTextGroup: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 10,
+    marginLeft: 14,
   },
-  gridTitle: {
-    color: Colors.textPrimary,
-    fontSize: 12,
+  bannerTitle: {
+    color: '#FFFFFF',
+    fontSize: 16,
     fontWeight: '700',
-    flex: 1,
   },
-  gridLiveIcon: {
-    marginLeft: 4,
+  bannerSubtitle: {
+    color: '#999999',
+    fontSize: 13,
+    marginTop: 2,
   },
+
+  /* Sections */
   sectionHeader: {
     paddingHorizontal: 16,
-    marginTop: 24,
-    marginBottom: 14,
+    marginTop: 16,
+    marginBottom: 8,
   },
   sectionTitle: {
-    fontSize: 22,
-    fontWeight: '900',
-    color: Colors.textPrimary,
+    color: '#FFFFFF',
+    fontSize: 20,
+    fontWeight: '700',
   },
-  horizontalList: {
-    paddingHorizontal: 16,
-    gap: 16,
+  tracksWrapper: {
+    paddingHorizontal: 4,
   },
-  largeSquareCard: {
-    width: 154,
+
+  /* Empty State */
+  emptyStateContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 32,
+    paddingVertical: 60,
   },
-  cardImageWrapper: {
-    width: 154,
-    height: 154,
-    borderRadius: 8,
-    position: 'relative',
-    overflow: 'hidden',
+  emptyStateTitle: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: '700',
+    marginTop: 16,
   },
-  cardImage: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 8,
+  emptyStateSubtitle: {
+    color: '#999999',
+    fontSize: 14,
+    textAlign: 'center',
+    marginTop: 6,
+    lineHeight: 20,
   },
-  spotifyBadge: {
-    position: 'absolute',
-    top: 8,
-    left: 8,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    padding: 4,
-    borderRadius: 12,
+  uploadNowBtn: {
+    backgroundColor: '#1DB954',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 24,
+    marginTop: 20,
   },
-  cardTitle: {
-    color: Colors.textPrimary,
+  uploadNowBtnText: {
+    color: '#000000',
     fontSize: 14,
     fontWeight: '700',
-    marginTop: 8,
-  },
-  cardArtists: {
-    color: Colors.textSecondary,
-    fontSize: 12,
-    marginTop: 3,
-    lineHeight: 16,
   },
 });
