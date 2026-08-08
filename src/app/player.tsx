@@ -236,44 +236,7 @@ export default function PlayerScreen() {
             </View>
           </View>
 
-          {/* Scrollable Lyrics Card */}
-          <View style={styles.lyricsCard}>
-            <View style={styles.lyricsCardHeader}>
-              <Text style={styles.lyricsCardTitle}>Lyrics</Text>
-              <View style={styles.lyricsCardActions}>
-                <Pressable style={styles.cardIconButton} onPress={handleShare}>
-                  <Ionicons name="share-outline" size={20} color="#FFFFFF" />
-                </Pressable>
-                <Pressable
-                  style={styles.cardIconButton}
-                  onPress={() => setIsLyricsExpanded(!isLyricsExpanded)}
-                >
-                  <Ionicons
-                    name={isLyricsExpanded ? 'contract' : 'expand'}
-                    size={20}
-                    color="#FFFFFF"
-                  />
-                </Pressable>
-              </View>
-            </View>
 
-            <View style={styles.lyricsBody}>
-              {lyricLines.map((line, idx) => {
-                const isCurrent = idx === currentLyricIndex;
-                return (
-                  <Text
-                    key={idx}
-                    style={[
-                      styles.lyricsLine,
-                      isCurrent && styles.lyricsLineActive,
-                    ]}
-                  >
-                    {line}
-                  </Text>
-                );
-              })}
-            </View>
-          </View>
         </ScrollView>
       </SafeAreaView>
 
