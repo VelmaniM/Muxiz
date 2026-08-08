@@ -24,11 +24,15 @@ export const TrackListItem: React.FC<TrackListItemProps> = ({ track, playlistCon
 
   const handlePress = () => {
     if (isCurrentTrack) {
-      togglePlayPause();
+      if (!isPlaying) {
+        togglePlayPause();
+      }
+      // Clicked again on currently playing song -> Navigate to full player screen
+      router.push('/player');
     } else {
+      // First click -> Start playing right here on this page without pushing player modal
       playTrack(track, playlistContext);
     }
-    router.push('/player');
   };
 
   const formatTime = (seconds: number) => {
