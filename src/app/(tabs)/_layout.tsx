@@ -11,10 +11,11 @@ export default function TabLayout() {
       <Tabs
         screenOptions={{
           headerShown: false,
-          tabBarShowLabel: false, // Hide text names under icons
-          tabBarActiveTintColor: Colors.primary,
-          tabBarInactiveTintColor: Colors.textMuted,
+          tabBarShowLabel: true,
+          tabBarActiveTintColor: '#FFFFFF',
+          tabBarInactiveTintColor: '#A7A7A7',
           tabBarStyle: styles.tabBar,
+          tabBarLabelStyle: styles.tabLabel,
           tabBarItemStyle: styles.tabItem,
         }}
       >
@@ -23,7 +24,7 @@ export default function TabLayout() {
           options={{
             title: 'Home',
             tabBarIcon: ({ color, focused }) => (
-              <Ionicons name={focused ? 'home' : 'home-outline'} size={25} color={color} />
+              <Ionicons name={focused ? 'home' : 'home-outline'} size={22} color={color} />
             ),
           }}
         />
@@ -32,7 +33,7 @@ export default function TabLayout() {
           options={{
             title: 'Search',
             tabBarIcon: ({ color, focused }) => (
-              <Ionicons name={focused ? 'search' : 'search-outline'} size={25} color={color} />
+              <Ionicons name={focused ? 'search' : 'search-outline'} size={22} color={color} />
             ),
           }}
         />
@@ -41,7 +42,7 @@ export default function TabLayout() {
           options={{
             title: 'Your Library',
             tabBarIcon: ({ color, focused }) => (
-              <Ionicons name={focused ? 'library' : 'library-outline'} size={25} color={color} />
+              <Ionicons name={focused ? 'library' : 'library-outline'} size={22} color={color} />
             ),
           }}
         />
@@ -50,7 +51,7 @@ export default function TabLayout() {
           options={{
             title: 'Upload',
             tabBarIcon: ({ color, focused }) => (
-              <Ionicons name={focused ? 'cloud-upload' : 'cloud-upload-outline'} size={25} color={color} />
+              <Ionicons name={focused ? 'cloud-upload' : 'cloud-upload-outline'} size={22} color={color} />
             ),
           }}
         />
@@ -89,24 +90,26 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   tabBar: {
-    backgroundColor: '#0B0C10',
-    borderTopColor: Colors.border,
-    borderTopWidth: 1,
-    height: 60,
-    paddingBottom: 10,
-    paddingTop: 6,
-    justifyContent: 'center',
+    backgroundColor: '#000000',
+    borderTopColor: 'rgba(255, 255, 255, 0.1)',
+    borderTopWidth: 0.5,
+    height: 62,
+    paddingBottom: 6,
+    paddingTop: 4,
   },
   tabItem: {
     paddingVertical: 2,
-    justifyContent: 'center',
-    alignItems: 'center',
+  },
+  tabLabel: {
+    fontSize: 11,
+    fontWeight: '500',
+    marginTop: 2,
   },
   miniPlayerWrapper: {
     position: 'absolute',
-    bottom: 60, // Positioned cleanly right above the 60px tab bar
-    left: 0,
-    right: 0,
+    bottom: 62, // Positioned cleanly right above the 62px tab bar
+    left: 4,
+    right: 4,
     zIndex: 99,
   },
 });

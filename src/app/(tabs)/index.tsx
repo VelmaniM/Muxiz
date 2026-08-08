@@ -1,74 +1,74 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Colors } from '../../constants/colors';
 import { useAudio } from '../../context/AudioContext';
 import { ProfileDrawer } from '../../components/ProfileDrawer';
 import { useProfile } from '../../context/ProfileContext';
-import { TrackListItem } from '../../components/TrackListItem';
 
 export default function HomeScreen() {
   const router = useRouter();
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [showDrawer, setShowDrawer] = useState(false);
-  const { queue } = useAudio();
+  const { queue, playTrack } = useAudio();
   const { profileImage } = useProfile();
 
   const categories = ['All', 'Music', 'Podcasts'];
 
-  const homeGridCards = [
+  const topMixes = [
     {
-      id: 'grid_1',
-      title: queue.length > 0 ? queue[0].title : 'Newly Added',
-      cover:
-        queue.length > 0
-          ? queue[0].artwork
-          : 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&q=80',
-      isLivePlaying: true,
+      id: 'mix_1',
+      title: 'Vidyasagar Mix',
+      subtitle: 'M. G. Radhakrishnan, Berny-Ignatius and Ouseppachan',
+      cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&q=80',
+      badge: 'Vidyasagar Mix',
+      badgeColor: '#E6D3B3',
       playlistId: 'pl_newly_added',
     },
     {
-      id: 'grid_2',
-      title: 'Sai Abhyankkar Mix',
-      cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&q=80',
+      id: 'mix_2',
+      title: '2020s Mix',
+      subtitle: 'Anirudh Ravichander, Sai Abhyankkar, Sundar C. Babu...',
+      cover: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&q=80',
+      badge: '2020s Mix',
+      badgeColor: '#D8E2A2',
       playlistId: 'pl_sai_abhyankkar',
     },
     {
-      id: 'grid_3',
-      title: 'Paruthiveeran',
-      cover: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&q=80',
+      id: 'mix_3',
+      title: '2010s Mix',
+      subtitle: 'Devi Sri Prasad, Harris Jayaraj, Yuvan Shankar Raja...',
+      cover: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80',
+      badge: '2010s Mix',
+      badgeColor: '#CD6EE7',
+      playlistId: 'pl_trending_tamil',
+    },
+  ];
+
+  const recommendedStations = [
+    {
+      id: 'st_1',
+      title: 'Sid Sriram Radio',
+      subtitle: 'Sid Sriram, Dhibu Ninan Thomas, Rajhesh Vaidhya...',
+      cover: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&q=80',
+      badge: 'RADIO',
       playlistId: 'pl_paruthiveeran',
     },
     {
-      id: 'grid_4',
-      title: 'Trending Now Tamil',
-      cover: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80',
-      playlistId: 'pl_trending_tamil',
-    },
-    {
-      id: 'grid_5',
-      title: 'DC (Original Motion Picture Soundtrack)',
+      id: 'st_2',
+      title: 'Arijit Singh Radio',
+      subtitle: 'Arijit Singh, Pritam, Atif Aslam...',
       cover: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=600&q=80',
+      badge: 'RADIO',
       playlistId: 'pl_dc_soundtrack',
     },
     {
-      id: 'grid_6',
-      title: 'Goindhamma (From "Meesaya Murukku...")',
+      id: 'st_3',
+      title: 'Harris Jayaraj Radio',
+      subtitle: 'Harris Jayaraj, Anirudh, Yuvan Shankar Raja...',
       cover: 'https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=600&q=80',
-      playlistId: 'pl_goindhamma',
-    },
-    {
-      id: 'grid_7',
-      title: 'Pakka Local',
-      cover: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&q=80',
-      playlistId: 'pl_pakka_local',
-    },
-    {
-      id: 'grid_8',
-      title: 'Sajanka',
-      cover: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80',
+      badge: 'RADIO',
       playlistId: 'pl_sajanka',
     },
   ];
@@ -114,56 +114,99 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* 2x4 Grid Container (8 Grid Cards) */}
-        <View style={styles.gridContainer}>
-          {homeGridCards.map((item) => (
+        {/* Section 1: Your top mixes */}
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Your top mixes</Text>
+        </View>
+
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.horizontalCardScroll}
+        >
+          {topMixes.map((mix) => (
             <Pressable
-              key={item.id}
-              style={styles.gridCard}
-              onPress={() => router.push(`/playlist/${item.playlistId}` as any)}
+              key={mix.id}
+              style={styles.cardItem}
+              onPress={() => router.push(`/playlist/${mix.playlistId}` as any)}
             >
-              <Image source={{ uri: item.cover }} style={styles.gridImage} />
-              <View style={styles.gridTextWrapper}>
-                <Text style={styles.gridTitle} numberOfLines={2}>
-                  {item.title}
-                </Text>
-                {item.isLivePlaying && (
-                  <Ionicons name="ellipsis-horizontal" size={14} color="#1DB954" style={styles.gridLiveIcon} />
-                )}
+              <View style={styles.cardImageWrapper}>
+                <Image source={{ uri: mix.cover }} style={styles.cardCover} />
+                <View style={[styles.badgePill, { backgroundColor: mix.badgeColor }]}>
+                  <Text style={styles.badgePillText}>{mix.badge}</Text>
+                </View>
               </View>
+              <Text style={styles.cardSubtitleText} numberOfLines={2}>
+                {mix.subtitle}
+              </Text>
             </Pressable>
           ))}
-        </View>
+        </ScrollView>
 
-        {/* Database Songs Section */}
+        {/* Section 2: Recommended Stations */}
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Your Songs</Text>
+          <Text style={styles.sectionTitle}>Recommended Stations</Text>
         </View>
 
-        {queue.length > 0 ? (
-          <View style={styles.tracksWrapper}>
-            {queue.map((track) => (
-              <TrackListItem key={track.id} track={track} playlistContext={queue} />
-            ))}
-          </View>
-        ) : (
-          <View style={styles.emptyDbBox}>
-            <Ionicons name="cloud-upload-outline" size={40} color="#666666" />
-            <Text style={styles.emptyDbTitle}>No Songs in Database Yet</Text>
-            <Text style={styles.emptyDbSubtitle}>
-              Uploaded tracks from Firestore Database will appear here live.
-            </Text>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.horizontalCardScroll}
+        >
+          {recommendedStations.map((st) => (
             <Pressable
-              style={styles.uploadNavBtn}
-              onPress={() => router.push('/upload')}
+              key={st.id}
+              style={styles.cardItem}
+              onPress={() => router.push(`/playlist/${st.playlistId}` as any)}
             >
-              <Text style={styles.uploadNavBtnText}>Upload Song to DB</Text>
+              <View style={styles.cardImageWrapper}>
+                <Image source={{ uri: st.cover }} style={styles.cardCover} />
+                <View style={styles.radioBadgePill}>
+                  <Text style={styles.radioBadgeText}>RADIO</Text>
+                </View>
+              </View>
+              <Text style={styles.cardSubtitleText} numberOfLines={2}>
+                {st.subtitle}
+              </Text>
             </Pressable>
-          </View>
+          ))}
+        </ScrollView>
+
+        {/* Section 3: Recently Added Tracks */}
+        {queue.length > 0 && (
+          <>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Database Tracks</Text>
+            </View>
+
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.horizontalCardScroll}
+            >
+              {queue.map((track) => (
+                <Pressable
+                  key={track.id}
+                  style={styles.cardItem}
+                  onPress={() => playTrack(track, queue)}
+                >
+                  <View style={styles.cardImageWrapper}>
+                    <Image source={{ uri: track.artwork }} style={styles.cardCover} />
+                  </View>
+                  <Text style={styles.cardTitleText} numberOfLines={1}>
+                    {track.title}
+                  </Text>
+                  <Text style={styles.cardSubtitleText} numberOfLines={1}>
+                    {track.artist}
+                  </Text>
+                </Pressable>
+              ))}
+            </ScrollView>
+          </>
         )}
       </ScrollView>
 
-      {/* Side Profile Drawer Modal */}
+      {/* Side Profile Drawer Component */}
       <ProfileDrawer visible={showDrawer} onClose={() => setShowDrawer(false)} />
     </SafeAreaView>
   );
@@ -172,35 +215,37 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: '#0B0C10',
   },
   scrollContent: {
-    paddingBottom: 160,
+    paddingBottom: 110,
   },
+
+  /* Header Row */
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingTop: 10,
-    paddingBottom: 12,
+    paddingTop: 12,
+    paddingBottom: 16,
     gap: 12,
   },
   avatarBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#333333',
-    alignItems: 'center',
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: '#2A2A2A',
     justifyContent: 'center',
+    alignItems: 'center',
     overflow: 'hidden',
   },
   avatarEmoji: {
-    fontSize: 18,
+    fontSize: 20,
   },
   avatarImgSmall: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
   },
   pillsRow: {
     flexDirection: 'row',
@@ -224,93 +269,77 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
 
-  /* 2x4 Grid Container */
-  gridContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingHorizontal: 16,
-    justifyContent: 'space-between',
-    gap: 8,
-    marginTop: 4,
-    marginBottom: 16,
-  },
-  gridCard: {
-    width: '48.5%',
-    height: 56,
-    backgroundColor: '#2A2A2A',
-    borderRadius: 6,
-    flexDirection: 'row',
-    alignItems: 'center',
-    overflow: 'hidden',
-  },
-  gridImage: {
-    width: 56,
-    height: 56,
-  },
-  gridTextWrapper: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-  },
-  gridTitle: {
-    color: '#FFFFFF',
-    fontSize: 13,
-    fontWeight: '700',
-    flex: 1,
-    marginRight: 4,
-  },
-  gridLiveIcon: {
-    marginLeft: 4,
-  },
-
   /* Section Styles */
   sectionHeader: {
     paddingHorizontal: 16,
-    marginTop: 12,
+    marginTop: 18,
     marginBottom: 12,
   },
   sectionTitle: {
     color: '#FFFFFF',
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: '700',
   },
-  tracksWrapper: {
-    paddingHorizontal: 4,
+  horizontalCardScroll: {
+    paddingHorizontal: 16,
+    gap: 14,
   },
-  emptyDbBox: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 30,
-    backgroundColor: '#16181E',
-    marginHorizontal: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.06)',
+
+  /* Card Item */
+  cardItem: {
+    width: 154,
   },
-  emptyDbTitle: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '700',
-    marginTop: 12,
+  cardImageWrapper: {
+    width: 154,
+    height: 154,
+    borderRadius: 8,
+    overflow: 'hidden',
+    position: 'relative',
+    backgroundColor: '#1E1E1E',
   },
-  emptyDbSubtitle: {
-    color: '#999999',
-    fontSize: 13,
-    textAlign: 'center',
-    marginTop: 4,
+  cardCover: {
+    width: '100%',
+    height: '100%',
   },
-  uploadNavBtn: {
-    backgroundColor: '#1DB954',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 20,
-    marginTop: 16,
+  badgePill: {
+    position: 'absolute',
+    bottom: 10,
+    left: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
   },
-  uploadNavBtnText: {
+  badgePillText: {
     color: '#000000',
     fontSize: 13,
+    fontWeight: '800',
+  },
+  radioBadgePill: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    backgroundColor: 'rgba(0, 0, 0, 0.65)',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 3,
+  },
+  radioBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 0.5,
+  },
+  cardTitleText: {
+    color: '#FFFFFF',
+    fontSize: 13,
     fontWeight: '700',
+    marginTop: 8,
+  },
+  cardSubtitleText: {
+    color: '#A7A7A7',
+    fontSize: 12,
+    fontWeight: '400',
+    marginTop: 6,
+    lineHeight: 16,
   },
 });
