@@ -1,20 +1,77 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Colors } from '../../constants/colors';
 import { useAudio } from '../../context/AudioContext';
 import { ProfileDrawer } from '../../components/ProfileDrawer';
 import { useProfile } from '../../context/ProfileContext';
+import { TrackListItem } from '../../components/TrackListItem';
 
 export default function HomeScreen() {
   const router = useRouter();
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [showDrawer, setShowDrawer] = useState(false);
-  const { queue, playTrack } = useAudio();
+  const { queue } = useAudio();
   const { profileImage } = useProfile();
 
   const categories = ['All', 'Music', 'Podcasts'];
+
+  const homeGridCards = [
+    {
+      id: 'grid_1',
+      title: queue.length > 0 ? queue[0].title : 'Newly Added',
+      cover:
+        queue.length > 0
+          ? queue[0].artwork
+          : 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&q=80',
+      isLivePlaying: true,
+      playlistId: 'pl_newly_added',
+    },
+    {
+      id: 'grid_2',
+      title: 'Sai Abhyankkar Mix',
+      cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&q=80',
+      playlistId: 'pl_sai_abhyankkar',
+    },
+    {
+      id: 'grid_3',
+      title: 'Paruthiveeran',
+      cover: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&q=80',
+      playlistId: 'pl_paruthiveeran',
+    },
+    {
+      id: 'grid_4',
+      title: 'Trending Now Tamil',
+      cover: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80',
+      playlistId: 'pl_trending_tamil',
+    },
+    {
+      id: 'grid_5',
+      title: 'DC Soundtrack',
+      cover: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=600&q=80',
+      playlistId: 'pl_dc_soundtrack',
+    },
+    {
+      id: 'grid_6',
+      title: 'Goindhamma Hits',
+      cover: 'https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=600&q=80',
+      playlistId: 'pl_goindhamma',
+    },
+    {
+      id: 'grid_7',
+      title: 'Pakka Local',
+      cover: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&q=80',
+      playlistId: 'pl_pakka_local',
+    },
+    {
+      id: 'grid_8',
+      title: 'Sajanka Melodies',
+      cover: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80',
+      playlistId: 'pl_sajanka',
+    },
+  ];
 
   const topMixes = [
     {
@@ -114,6 +171,27 @@ export default function HomeScreen() {
           </View>
         </View>
 
+        {/* 2x4 Quick Grid Cards */}
+        <View style={styles.gridContainer}>
+          {homeGridCards.map((item) => (
+            <Pressable
+              key={item.id}
+              style={styles.gridCard}
+              onPress={() => router.push(`/playlist/${item.playlistId}` as any)}
+            >
+              <Image source={{ uri: item.cover }} style={styles.gridImage} />
+              <View style={styles.gridTextWrapper}>
+                <Text style={styles.gridTitle} numberOfLines={2}>
+                  {item.title}
+                </Text>
+                {item.isLivePlaying && (
+                  <Ionicons name="ellipsis-horizontal" size={14} color="#1DB954" style={styles.gridLiveIcon} />
+                )}
+              </View>
+            </Pressable>
+          ))}
+        </View>
+
         {/* Section 1: Your top mixes */}
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Your top mixes</Text>
@@ -172,38 +250,16 @@ export default function HomeScreen() {
           ))}
         </ScrollView>
 
-        {/* Section 3: Recently Added Tracks */}
-        {queue.length > 0 && (
-          <>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Database Tracks</Text>
-            </View>
+        {/* Section 3: Your Songs Vertical Track List */}
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Your Songs</Text>
+        </View>
 
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.horizontalCardScroll}
-            >
-              {queue.map((track) => (
-                <Pressable
-                  key={track.id}
-                  style={styles.cardItem}
-                  onPress={() => playTrack(track, queue)}
-                >
-                  <View style={styles.cardImageWrapper}>
-                    <Image source={{ uri: track.artwork }} style={styles.cardCover} />
-                  </View>
-                  <Text style={styles.cardTitleText} numberOfLines={1}>
-                    {track.title}
-                  </Text>
-                  <Text style={styles.cardSubtitleText} numberOfLines={1}>
-                    {track.artist}
-                  </Text>
-                </Pressable>
-              ))}
-            </ScrollView>
-          </>
-        )}
+        <View style={styles.tracksWrapper}>
+          {queue.map((track) => (
+            <TrackListItem key={track.id} track={track} playlistContext={queue} />
+          ))}
+        </View>
       </ScrollView>
 
       {/* Side Profile Drawer Component */}
@@ -227,7 +283,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingTop: 12,
-    paddingBottom: 16,
+    paddingBottom: 12,
     gap: 12,
   },
   avatarBtn: {
@@ -267,6 +323,47 @@ const styles = StyleSheet.create({
   },
   activePillText: {
     color: '#000000',
+  },
+
+  /* 2x4 Quick Grid Cards */
+  gridContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    paddingHorizontal: 16,
+    justifyContent: 'space-between',
+    gap: 8,
+    marginTop: 4,
+    marginBottom: 16,
+  },
+  gridCard: {
+    width: '48.5%',
+    height: 56,
+    backgroundColor: '#2A2A2A',
+    borderRadius: 6,
+    flexDirection: 'row',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  gridImage: {
+    width: 56,
+    height: 56,
+  },
+  gridTextWrapper: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+  },
+  gridTitle: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '700',
+    flex: 1,
+    marginRight: 4,
+  },
+  gridLiveIcon: {
+    marginLeft: 4,
   },
 
   /* Section Styles */
@@ -329,17 +426,14 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     letterSpacing: 0.5,
   },
-  cardTitleText: {
-    color: '#FFFFFF',
-    fontSize: 13,
-    fontWeight: '700',
-    marginTop: 8,
-  },
   cardSubtitleText: {
     color: '#A7A7A7',
     fontSize: 12,
     fontWeight: '400',
     marginTop: 6,
     lineHeight: 16,
+  },
+  tracksWrapper: {
+    paddingHorizontal: 4,
   },
 });

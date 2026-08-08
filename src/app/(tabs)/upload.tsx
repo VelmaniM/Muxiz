@@ -41,9 +41,23 @@ export default function UploadScreen() {
       // Create new AbortController instance
       abortControllerRef.current = new AbortController();
 
-      // 1. Open File Picker for Multiple Songs / Folder Files
+      // 1. Open File Picker for Multiple Songs / Folder Files (Supports iPhone & Android Files app)
       const result = await DocumentPicker.getDocumentAsync({
-        type: 'audio/*',
+        type: [
+          'audio/*',
+          'audio/mpeg',
+          'audio/mp3',
+          'audio/x-mpeg',
+          'audio/x-mp3',
+          'audio/aac',
+          'audio/mp4',
+          'audio/wav',
+          'audio/x-m4a',
+          'audio/m4a',
+          'audio/flac',
+          'application/octet-stream',
+          '*/*',
+        ],
         copyToCacheDirectory: true,
         multiple: true,
       });

@@ -1,5 +1,5 @@
 /**
- * Cloudinary Upload Utility with Signed Upload & Blob/File Support
+ * Cloudinary Upload Utility with Mobile & Web Support
  * Uses Cloudinary Cloud Name: dbsqhu7v5
  * API Key: 361899585814834
  * API Secret: 2MM5hD50va_ZSLAZdNu0sS_WpZ0
@@ -115,22 +115,30 @@ export const uploadToCloudinary = async (
     const signature = sha1(signatureStr);
 
     const formData = new FormData();
+    const uriStr = typeof fileUriOrObject === 'string' ? fileUriOrObject : fileUriOrObject?.uri || '';
 
     if (typeof File !== 'undefined' && fileUriOrObject instanceof File) {
       formData.append('file', fileUriOrObject, fileName);
     } else if (typeof Blob !== 'undefined' && fileUriOrObject instanceof Blob) {
       formData.append('file', fileUriOrObject, fileName);
-    } else if (typeof fileUriOrObject === 'string' && (fileUriOrObject.startsWith('data:') || fileUriOrObject.startsWith('blob:'))) {
-      const response = await fetch(fileUriOrObject);
+    } else if (uriStr.startsWith('data:') || uriStr.startsWith('blob:')) {
+      const response = await fetch(uriStr);
       const blob = await response.blob();
       formData.append('file', blob, fileName);
+    } else if (uriStr) {
+      try {
+        const response = await fetch(uriStr);
+        const blob = await response.blob();
+        formData.append('file', blob, fileName);
+      } catch (e) {
+        formData.append('file', {
+          uri: uriStr,
+          type: resourceType === 'image' ? 'image/jpeg' : 'audio/mpeg',
+          name: fileName || 'audio.mp3',
+        } as any);
+      }
     } else {
-      const uriStr = typeof fileUriOrObject === 'string' ? fileUriOrObject : fileUriOrObject?.uri || '';
-      formData.append('file', {
-        uri: uriStr,
-        type: resourceType === 'image' ? 'image/jpeg' : 'audio/mpeg',
-        name: fileName,
-      } as any);
+      formData.append('file', fileUriOrObject);
     }
 
     formData.append('api_key', CLOUDINARY_API_KEY);
