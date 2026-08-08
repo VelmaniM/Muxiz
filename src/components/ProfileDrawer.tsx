@@ -40,7 +40,7 @@ export const ProfileDrawer: React.FC<ProfileDrawerProps> = ({ visible, onClose }
   return (
     <Modal
       visible={visible}
-      animationType="fade"
+      animationType="none"
       transparent={true}
       onRequestClose={onClose}
     >
