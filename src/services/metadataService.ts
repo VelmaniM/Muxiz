@@ -10,12 +10,13 @@ export interface TrackMetadata {
 }
 
 /**
- * Clean title helper: removes movie name prefixes/suffixes and artist names from song title
+ * Clean title helper: removes movie name prefixes/suffixes, website watermarks, and artist names from song title
  */
 export const getCleanTitleOnly = (rawTitle: string, artistName?: string): string => {
   if (!rawTitle) return '';
   
   let cleaned = rawTitle
+    .replace(/\.[^/.]+$/, '')
     .replace(/\s*\(From\s+["'].*?["']\)/gi, '')
     .replace(/\s*\(From\s+.*?\)/gi, '')
     .replace(/\s*\[From\s+.*?\]/gi, '')
@@ -23,7 +24,6 @@ export const getCleanTitleOnly = (rawTitle: string, artistName?: string): string
     .replace(/\s*-\s*From\s+.*/gi, '')
     .replace(/\s*from\s+["'].*?["']/gi, '')
     .replace(/\[.*?\]/g, '')
-    .replace(/\.[^/.]+$/, '')
     .replace(/320kbps|128kbps|masstamilan|isaimini|sensongs|starmusiq|kuttyweb|tamildada|tamiltunes|video song|full song|audio|official|tamil/gi, '')
     .trim();
 
@@ -33,8 +33,8 @@ export const getCleanTitleOnly = (rawTitle: string, artistName?: string): string
     cleaned = parts[0].trim();
   }
 
-  // If artistName is provided and title contains artistName, remove artistName from title
-  if (artistName && artistName.trim().length > 0) {
+  // If artistName is provided, remove artistName from title if embedded
+  if (artistName && artistName.trim().length > 0 && artistName.toLowerCase() !== 'unknown artist') {
     const artistLower = artistName.trim().toLowerCase();
     if (cleaned.toLowerCase().includes(artistLower)) {
       cleaned = cleaned.replace(new RegExp(artistName.trim(), 'gi'), '').trim();
@@ -52,15 +52,15 @@ export const getCleanTitleOnly = (rawTitle: string, artistName?: string): string
 const CLEAN_FALLBACK_ARTWORK = 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&q=80';
 
 /**
- * Extract 100% Accurate Song Metadata & High-Res Official Cover Artwork from Spotify / iTunes
+ * Extract 100% Accurate Song Metadata & High-Res Official Cover Artwork from Spotify / iTunes Catalog
  */
 export const extractAudioFileMetadata = async (fileName: string): Promise<TrackMetadata> => {
   // 1. Fetch exact high-res movie/album cover artwork & clean artist name from Spotify/iTunes Catalog
   const officialSpotifyData = await fetchOfficialSpotifyArtwork(fileName);
 
   if (officialSpotifyData && officialSpotifyData.artwork) {
-    const cleanTitle = getCleanTitleOnly(officialSpotifyData.title, officialSpotifyData.artist);
     const cleanArtist = (officialSpotifyData.artist || 'Unknown Artist').trim();
+    const cleanTitle = getCleanTitleOnly(officialSpotifyData.title, cleanArtist);
 
     return {
       title: cleanTitle,
@@ -90,8 +90,8 @@ export const extractAudioFileMetadata = async (fileName: string): Promise<TrackM
     }
   }
 
-  title = getCleanTitleOnly(title, artist);
   artist = artist.replace(/320kbps|128kbps|masstamilan|isaimini|sensongs|starmusiq|kuttyweb/gi, '').trim() || 'Unknown Artist';
+  title = getCleanTitleOnly(title, artist);
 
   return {
     title,
