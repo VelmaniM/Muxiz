@@ -21,51 +21,51 @@ export default function HomeScreen() {
   const homeGridCards = [
     {
       id: 'grid_1',
-      title: queue.length > 0 ? queue[0].title : 'Newly Added',
-      cover: queue.length > 0 ? queue[0].artwork : 'https://c.saavncdn.com/264/Attakathi-Tamil-2012-500x500.jpg',
+      title: 'Newly Added',
+      cover: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&q=80',
       isLivePlaying: true,
       playlistId: 'pl_newly_added',
     },
     {
       id: 'grid_2',
       title: 'Sai Abhyankkar Mix',
-      cover: 'https://c.saavncdn.com/712/Aaathi-Adi-Aaathi-Tamil-2023-500x500.jpg',
+      cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&q=80',
       playlistId: 'pl_sai_abhyankkar',
     },
     {
       id: 'grid_3',
       title: 'Paruthiveeran',
-      cover: 'https://c.saavncdn.com/398/Suryavamsam-Tamil-1997-500x500.jpg',
+      cover: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&q=80',
       playlistId: 'pl_paruthiveeran',
     },
     {
       id: 'grid_4',
       title: 'Trending Now Tamil',
-      cover: 'https://c.saavncdn.com/780/Raja-Rani-Tamil-2013-500x500.jpg',
+      cover: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80',
       playlistId: 'pl_trending_tamil',
     },
     {
       id: 'grid_5',
       title: 'DC Soundtrack',
-      cover: 'https://c.saavncdn.com/023/Captain-Miller-Tamil-2024-500x500.jpg',
+      cover: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=600&q=80',
       playlistId: 'pl_dc_soundtrack',
     },
     {
       id: 'grid_6',
       title: 'Goindhamma Hits',
-      cover: 'https://c.saavncdn.com/495/3-Tamil-2011-500x500.jpg',
+      cover: 'https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=600&q=80',
       playlistId: 'pl_goindhamma',
     },
     {
       id: 'grid_7',
       title: 'Pakka Local',
-      cover: 'https://c.saavncdn.com/264/Attakathi-Tamil-2012-500x500.jpg',
+      cover: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&q=80',
       playlistId: 'pl_pakka_local',
     },
     {
       id: 'grid_8',
       title: 'Sajanka Melodies',
-      cover: 'https://c.saavncdn.com/780/Raja-Rani-Tamil-2013-500x500.jpg',
+      cover: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80',
       playlistId: 'pl_sajanka',
     },
   ];
@@ -75,7 +75,7 @@ export default function HomeScreen() {
       id: 'mix_1',
       title: 'Vidyasagar Mix',
       subtitle: 'M. G. Radhakrishnan, Berny-Ignatius and Ouseppachan',
-      cover: 'https://c.saavncdn.com/264/Attakathi-Tamil-2012-500x500.jpg',
+      cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&q=80',
       badge: 'Vidyasagar Mix',
       badgeColor: '#E6D3B3',
       playlistId: 'pl_newly_added',
@@ -84,7 +84,7 @@ export default function HomeScreen() {
       id: 'mix_2',
       title: '2020s Mix',
       subtitle: 'Anirudh Ravichander, Sai Abhyankkar, Sundar C. Babu...',
-      cover: 'https://c.saavncdn.com/712/Aaathi-Adi-Aaathi-Tamil-2023-500x500.jpg',
+      cover: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&q=80',
       badge: '2020s Mix',
       badgeColor: '#D8E2A2',
       playlistId: 'pl_sai_abhyankkar',
@@ -93,7 +93,7 @@ export default function HomeScreen() {
       id: 'mix_3',
       title: '2010s Mix',
       subtitle: 'Devi Sri Prasad, Harris Jayaraj, Yuvan Shankar Raja...',
-      cover: 'https://c.saavncdn.com/780/Raja-Rani-Tamil-2013-500x500.jpg',
+      cover: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80',
       badge: '2010s Mix',
       badgeColor: '#CD6EE7',
       playlistId: 'pl_trending_tamil',
@@ -105,7 +105,7 @@ export default function HomeScreen() {
       id: 'st_1',
       title: 'Sid Sriram Radio',
       subtitle: 'Sid Sriram, Dhibu Ninan Thomas, Rajhesh Vaidhya...',
-      cover: 'https://c.saavncdn.com/398/Suryavamsam-Tamil-1997-500x500.jpg',
+      cover: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&q=80',
       badge: 'RADIO',
       playlistId: 'pl_paruthiveeran',
     },
@@ -113,7 +113,7 @@ export default function HomeScreen() {
       id: 'st_2',
       title: 'Arijit Singh Radio',
       subtitle: 'Arijit Singh, Pritam, Atif Aslam...',
-      cover: 'https://c.saavncdn.com/023/Captain-Miller-Tamil-2024-500x500.jpg',
+      cover: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=600&q=80',
       badge: 'RADIO',
       playlistId: 'pl_dc_soundtrack',
     },
@@ -121,7 +121,7 @@ export default function HomeScreen() {
       id: 'st_3',
       title: 'Harris Jayaraj Radio',
       subtitle: 'Harris Jayaraj, Anirudh, Yuvan Shankar Raja...',
-      cover: 'https://c.saavncdn.com/495/3-Tamil-2011-500x500.jpg',
+      cover: 'https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=600&q=80',
       badge: 'RADIO',
       playlistId: 'pl_sajanka',
     },
@@ -168,7 +168,7 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* 2x4 Quick Grid Cards */}
+        {/* 2x4 Quick Grid Cards (Playlist Covers) */}
         <View style={styles.gridContainer}>
           {homeGridCards.map((item) => (
             <Pressable
@@ -247,7 +247,7 @@ export default function HomeScreen() {
           ))}
         </ScrollView>
 
-        {/* Section 3: Your Songs Vertical Track List */}
+        {/* Section 3: Your Songs Vertical Track List (Official Song Artwork & Movie Posters) */}
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Your Songs</Text>
         </View>
