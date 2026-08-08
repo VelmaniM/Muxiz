@@ -11,10 +11,10 @@ export default function TabLayout() {
       <Tabs
         screenOptions={{
           headerShown: false,
+          tabBarShowLabel: false, // Hide text names under icons
           tabBarActiveTintColor: Colors.primary,
           tabBarInactiveTintColor: Colors.textMuted,
           tabBarStyle: styles.tabBar,
-          tabBarLabelStyle: styles.tabLabel,
           tabBarItemStyle: styles.tabItem,
         }}
       >
@@ -23,7 +23,7 @@ export default function TabLayout() {
           options={{
             title: 'Home',
             tabBarIcon: ({ color, focused }) => (
-              <Ionicons name={focused ? 'home' : 'home-outline'} size={22} color={color} />
+              <Ionicons name={focused ? 'home' : 'home-outline'} size={25} color={color} />
             ),
           }}
         />
@@ -32,7 +32,7 @@ export default function TabLayout() {
           options={{
             title: 'Search',
             tabBarIcon: ({ color, focused }) => (
-              <Ionicons name={focused ? 'search' : 'search-outline'} size={22} color={color} />
+              <Ionicons name={focused ? 'search' : 'search-outline'} size={25} color={color} />
             ),
           }}
         />
@@ -41,7 +41,7 @@ export default function TabLayout() {
           options={{
             title: 'Your Library',
             tabBarIcon: ({ color, focused }) => (
-              <Ionicons name={focused ? 'library' : 'library-outline'} size={22} color={color} />
+              <Ionicons name={focused ? 'library' : 'library-outline'} size={25} color={color} />
             ),
           }}
         />
@@ -50,7 +50,7 @@ export default function TabLayout() {
           options={{
             title: 'Upload',
             tabBarIcon: ({ color, focused }) => (
-              <Ionicons name={focused ? 'cloud-upload' : 'cloud-upload-outline'} size={22} color={color} />
+              <Ionicons name={focused ? 'cloud-upload' : 'cloud-upload-outline'} size={25} color={color} />
             ),
           }}
         />
@@ -92,21 +92,19 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(11, 12, 16, 0.98)',
     borderTopColor: Colors.border,
     borderTopWidth: 1,
-    height: 64,
-    paddingBottom: 8,
-    paddingTop: 4,
+    height: 52,
+    paddingBottom: 0,
+    paddingTop: 0,
+    justifyContent: 'center',
   },
   tabItem: {
-    paddingVertical: 2,
-  },
-  tabLabel: {
-    fontSize: 11,
-    fontWeight: '600',
-    marginTop: 2,
+    paddingVertical: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   miniPlayerWrapper: {
     position: 'absolute',
-    bottom: 64, // Positioned cleanly right above the 64px tab bar
+    bottom: 52, // Positioned cleanly right above the sleek 52px tab bar
     left: 0,
     right: 0,
     zIndex: 99,
