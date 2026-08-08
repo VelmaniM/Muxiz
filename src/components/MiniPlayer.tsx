@@ -4,7 +4,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useAudio } from '../context/AudioContext';
 import { Colors } from '../constants/colors';
-
 import { getCleanTitleOnly } from '../services/metadataService';
 
 export const MiniPlayer: React.FC = () => {
@@ -24,7 +23,7 @@ export const MiniPlayer: React.FC = () => {
       </View>
 
       <View style={styles.contentRow}>
-        {/* Track Artwork */}
+        {/* Album Art Thumbnail: 56px by 56px square */}
         <Image source={{ uri: currentTrack.artwork }} style={styles.artwork} />
 
         {/* Track Title & Artist */}
@@ -49,7 +48,7 @@ export const MiniPlayer: React.FC = () => {
           >
             <Ionicons
               name={isPlaying ? 'pause-circle' : 'play-circle'}
-              size={32}
+              size={36}
               color={Colors.textPrimary}
             />
           </Pressable>
@@ -62,7 +61,7 @@ export const MiniPlayer: React.FC = () => {
             }}
             style={styles.controlButton}
           >
-            <Ionicons name="play-skip-forward" size={22} color={Colors.textSecondary} />
+            <Ionicons name="play-skip-forward" size={24} color={Colors.textSecondary} />
           </Pressable>
         </View>
       </View>
@@ -72,60 +71,58 @@ export const MiniPlayer: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'rgba(22, 24, 30, 0.96)',
-    borderWidth: 1,
-    borderColor: Colors.glassBorder,
-    marginHorizontal: 10,
-    marginBottom: 4,
-    borderRadius: 14,
+    backgroundColor: '#121212',
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255, 255, 255, 0.1)',
+    width: '100%',
+    height: 90, // Exact 90px total height specified by user
     overflow: 'hidden',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.45,
-    shadowRadius: 12,
-    elevation: 10,
-    height: 60,
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+    elevation: 12,
   },
   progressBarBackground: {
-    height: 2.5,
+    height: 3,
     width: '100%',
     backgroundColor: 'rgba(255, 255, 255, 0.12)',
   },
   progressBarFill: {
     height: '100%',
-    backgroundColor: Colors.primary,
+    backgroundColor: '#1DB954',
   },
   contentRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 10,
-    height: 57.5,
+    paddingHorizontal: 16,
+    height: 87, // 90px total height minus 3px progress line
   },
   artwork: {
-    width: 42,
-    height: 42,
-    borderRadius: 8,
+    width: 56, // Exact 56px width specified by user
+    height: 56, // Exact 56px height specified by user
+    borderRadius: 6,
   },
   textContainer: {
     flex: 1,
-    marginLeft: 10,
-    marginRight: 8,
+    marginLeft: 14,
+    marginRight: 12,
     justifyContent: 'center',
   },
   title: {
-    color: Colors.textPrimary,
+    color: '#FFFFFF',
     fontSize: 14,
     fontWeight: '700',
   },
   artist: {
-    color: Colors.textSecondary,
+    color: '#A7A7A7',
     fontSize: 12,
-    marginTop: 2,
+    marginTop: 3,
   },
   controlsRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 12,
   },
   controlButton: {
     padding: 4,

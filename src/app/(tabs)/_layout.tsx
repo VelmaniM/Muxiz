@@ -108,8 +108,9 @@ const styles = StyleSheet.create({
   miniPlayerWrapper: {
     position: 'absolute',
     bottom: 74, // Positioned cleanly right above the 74px tab bar
-    left: 4,
-    right: 4,
+    left: 0,
+    right: 0,
+    width: '100%',
     zIndex: 99,
   },
 });
