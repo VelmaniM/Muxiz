@@ -92,21 +92,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
     borderTopColor: 'rgba(255, 255, 255, 0.1)',
     borderTopWidth: 0.5,
-    height: 84,
-    paddingBottom: 24,
-    paddingTop: 8,
+    height: 60,
+    paddingBottom: 10,
+    paddingTop: 10,
   },
   tabItem: {
-    paddingVertical: 2,
-  },
-  tabLabel: {
-    fontSize: 11,
-    fontWeight: '500',
-    marginTop: 3,
+    paddingVertical: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   miniPlayerWrapper: {
     position: 'absolute',
-    bottom: 84, // Positioned cleanly right above the 84px tab bar
+    bottom: 60, // Positioned cleanly right above the 60px tab bar
     left: 0,
     right: 0,
     width: '100%',
