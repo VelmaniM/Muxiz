@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     color: Colors.textPrimary,
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '500',
   },
   scrollContent: {

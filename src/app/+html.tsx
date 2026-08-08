@@ -2,7 +2,7 @@ import { ScrollViewStyleReset } from 'expo-router/html';
 import { type PropsWithChildren } from 'react';
 
 /**
- * Root html layout for web in Expo Router with fixed screen size & disabled user zoom.
+ * Root html layout for web in Expo Router with fixed screen size & disabled input auto-zoom.
  */
 export default function RootLayoutHTML({ children }: PropsWithChildren) {
   return (
@@ -34,6 +34,9 @@ export default function RootLayoutHTML({ children }: PropsWithChildren) {
             -ms-text-size-adjust: 100% !important;
             text-size-adjust: 100% !important;
             overflow-x: hidden !important;
+          }
+          input, textarea, select {
+            font-size: 16px !important;
           }
           *:focus, *:focus-visible, *:focus-within, *:active {
             outline: none !important;
