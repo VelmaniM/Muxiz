@@ -8,6 +8,16 @@
   --font-serif: Georgia, 'Times New Roman', serif;
 }
 
+html,
+body,
+#root,
+#__next {
+  background-color: #000000 !important;
+  color-scheme: dark !important;
+  margin: 0;
+  padding: 0;
+}
+
 /* Remove default browser focus outline ring on clicks */
 *:focus,
 *:focus-visible,
