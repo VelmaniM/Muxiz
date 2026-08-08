@@ -62,9 +62,9 @@ export default function SearchScreen() {
           <>
             <Text style={styles.sectionTitle}>Browse All Genres</Text>
             <View style={styles.genreGrid}>
-              {MOCK_GENRES.map((g) => (
+              {MOCK_GENRES.map((g: any) => (
                 <View key={g.id} style={styles.gridColumn}>
-                  <GenreCard name={g.name} color={g.color} image={g.image} />
+                  <GenreCard name={g.name} color={g.color} image={g.cover} />
                 </View>
               ))}
             </View>

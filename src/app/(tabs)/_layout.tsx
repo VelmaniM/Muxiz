@@ -89,22 +89,22 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   tabBar: {
-    backgroundColor: 'rgba(11, 12, 16, 0.98)',
+    backgroundColor: '#0B0C10',
     borderTopColor: Colors.border,
     borderTopWidth: 1,
-    height: 52,
-    paddingBottom: 0,
-    paddingTop: 0,
+    height: 60,
+    paddingBottom: 10,
+    paddingTop: 6,
     justifyContent: 'center',
   },
   tabItem: {
-    paddingVertical: 4,
+    paddingVertical: 2,
     justifyContent: 'center',
     alignItems: 'center',
   },
   miniPlayerWrapper: {
     position: 'absolute',
-    bottom: 52, // Positioned cleanly right above the sleek 52px tab bar
+    bottom: 60, // Positioned cleanly right above the 60px tab bar
     left: 0,
     right: 0,
     zIndex: 99,

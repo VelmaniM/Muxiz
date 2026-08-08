@@ -60,14 +60,10 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       playThroughEarpieceAndroid: false,
     }).catch(err => console.log('Audio mode config:', err));
 
-    // Subscribe to Firestore DB live uploads and prepend them to queue
+    // Subscribe to Firestore DB live uploads and sync directly to queue
     const unsubscribeFs = subscribeToFirestoreTracks((fsTracks) => {
       if (fsTracks && fsTracks.length > 0) {
-        setQueue(prev => {
-          const existingIds = new Set(prev.map(t => t.id));
-          const newUnique = fsTracks.filter(t => !existingIds.has(t.id));
-          return [...newUnique, ...prev];
-        });
+        setQueue(fsTracks);
       }
     });
 
