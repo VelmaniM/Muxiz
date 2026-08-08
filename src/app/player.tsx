@@ -162,65 +162,69 @@ export default function PlayerScreen() {
             </View>
           </View>
 
-          {/* Progress Slider Bar */}
-          <View style={styles.progressContainer}>
-            <View style={styles.progressBarWrapper}>
-              <View style={styles.progressBarTrack}>
-                <View style={[styles.progressBarFill, { width: `${Math.min(100, Math.max(0, progressPercent))}%` }]} />
-                <View style={[styles.progressKnob, { left: `${Math.min(100, Math.max(0, progressPercent))}%` }]} />
-              </View>
-            </View>
-
-            <View style={styles.timeLabelsRow}>
+          {/* Audio Scrubber Slider */}
+          <View style={styles.sliderContainer}>
+            <Slider
+              style={styles.slider}
+              minimumValue={0}
+              maximumValue={durationMillis || 1}
+              value={positionMillis}
+              minimumTrackTintColor={Colors.textPrimary}
+              maximumTrackTintColor="rgba(255, 255, 255, 0.2)"
+              thumbTintColor={Colors.textPrimary}
+              onSlidingComplete={(value) => seekTo(value)}
+            />
+            <View style={styles.timeRow}>
               <Text style={styles.timeText}>{formatTime(positionMillis)}</Text>
-              <Text style={styles.timeText}>{formatRemainingTime(positionMillis, durationMillis)}</Text>
+              <Text style={styles.timeText}>
+                {formatRemainingTime(positionMillis, durationMillis)}
+              </Text>
             </View>
           </View>
 
-          {/* Main Playback Controls */}
-          <View style={styles.mainControlsRow}>
-            <Pressable onPress={toggleShuffle} style={styles.controlIconPad}>
+          {/* Main Controls Row */}
+          <View style={styles.controlsRow}>
+            <Pressable onPress={toggleShuffle} style={styles.iconPad}>
               <Ionicons
                 name="shuffle"
-                size={22}
-                color={isShuffle ? Colors.primary : Colors.textSecondary}
+                size={24}
+                color={isShuffle ? Colors.primary : Colors.textMuted}
               />
             </Pressable>
 
-            <Pressable onPress={previousTrack} style={styles.controlIconPad}>
+            <Pressable onPress={previousTrack} style={styles.iconPad}>
               <Ionicons name="play-skip-back" size={32} color={Colors.textPrimary} />
             </Pressable>
 
-            <Pressable onPress={togglePlayPause} style={styles.playPauseCircleBtn}>
+            <Pressable style={styles.playButton} onPress={togglePlayPause}>
               <Ionicons
                 name={isPlaying ? 'pause' : 'play'}
                 size={34}
                 color="#000000"
-                style={isPlaying ? {} : { marginLeft: 3 }}
+                style={{ marginLeft: isPlaying ? 0 : 4 }}
               />
             </Pressable>
 
-            <Pressable onPress={nextTrack} style={styles.controlIconPad}>
+            <Pressable onPress={nextTrack} style={styles.iconPad}>
               <Ionicons name="play-skip-forward" size={32} color={Colors.textPrimary} />
             </Pressable>
 
-            <Pressable onPress={toggleRepeat} style={styles.controlIconPad}>
+            <Pressable onPress={toggleRepeat} style={styles.iconPad}>
               <Ionicons
                 name={repeatMode === 'one' ? 'repeat-outline' : 'repeat'}
-                size={22}
-                color={repeatMode !== 'off' ? Colors.primary : Colors.textSecondary}
+                size={24}
+                color={repeatMode !== 'off' ? Colors.primary : Colors.textMuted}
               />
             </Pressable>
           </View>
 
-          {/* Bottom Utility Actions Bar */}
-          <View style={styles.bottomUtilitiesRow}>
-            {/* Devices Connect Icon */}
+          {/* Utility Action Row */}
+          <View style={styles.utilityRow}>
             <Pressable style={styles.utilityIcon} onPress={() => Alert.alert('Connect Device', 'AirPlay & Bluetooth Streaming Ready')}>
-              <Ionicons name="hardware-chip-outline" size={20} color={Colors.textSecondary} />
+              <Ionicons name="hardware-chip-outline" size={22} color={Colors.textSecondary} />
             </Pressable>
 
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
+            <View style={styles.utilityRightGroup}>
               {/* Share Icon */}
               <Pressable style={styles.utilityIcon} onPress={handleShare}>
                 <Ionicons name="share-outline" size={22} color={Colors.textSecondary} />
@@ -686,7 +690,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalBackdrop: {
-    ...StyleSheet.absoluteFill,
+    ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0.65)',
   },
 

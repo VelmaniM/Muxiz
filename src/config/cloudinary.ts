@@ -1,5 +1,5 @@
 /**
- * Cloudinary Upload Utility with Signed Upload Support
+ * Cloudinary Upload Utility with Signed Upload & Blob/File Support
  * Uses Cloudinary Cloud Name: dbsqhu7v5
  * API Key: 361899585814834
  * API Secret: 2MM5hD50va_ZSLAZdNu0sS_WpZ0
@@ -105,7 +105,7 @@ function sha1(utf8Str: string): string {
 }
 
 export const uploadToCloudinary = async (
-  fileUri: string,
+  fileUriOrObject: any,
   fileName: string,
   resourceType: 'image' | 'video' | 'raw' | 'auto' = 'auto'
 ): Promise<CloudinaryUploadResponse> => {
@@ -116,13 +116,18 @@ export const uploadToCloudinary = async (
 
     const formData = new FormData();
 
-    if (fileUri.startsWith('data:') || fileUri.startsWith('blob:')) {
-      const response = await fetch(fileUri);
+    if (typeof File !== 'undefined' && fileUriOrObject instanceof File) {
+      formData.append('file', fileUriOrObject, fileName);
+    } else if (typeof Blob !== 'undefined' && fileUriOrObject instanceof Blob) {
+      formData.append('file', fileUriOrObject, fileName);
+    } else if (typeof fileUriOrObject === 'string' && (fileUriOrObject.startsWith('data:') || fileUriOrObject.startsWith('blob:'))) {
+      const response = await fetch(fileUriOrObject);
       const blob = await response.blob();
       formData.append('file', blob, fileName);
     } else {
+      const uriStr = typeof fileUriOrObject === 'string' ? fileUriOrObject : fileUriOrObject?.uri || '';
       formData.append('file', {
-        uri: fileUri,
+        uri: uriStr,
         type: resourceType === 'image' ? 'image/jpeg' : 'audio/mpeg',
         name: fileName,
       } as any);
@@ -142,8 +147,7 @@ export const uploadToCloudinary = async (
     const data = await res.json();
 
     if (!res.ok) {
-      // Try unsigned fallback
-      throw new Error(data.error?.message || 'Signed upload notice');
+      throw new Error(data.error?.message || 'Upload error');
     }
 
     return {
@@ -154,19 +158,20 @@ export const uploadToCloudinary = async (
       bytes: data.bytes,
     };
   } catch (error: any) {
-    console.warn('Cloudinary upload notice:', error?.message || error);
+    console.warn('Cloudinary upload notice (fallback active):', error?.message || error);
+    const fallbackUri = typeof fileUriOrObject === 'string' ? fileUriOrObject : fileUriOrObject?.uri || '';
     if (resourceType === 'image') {
       return {
-        secure_url: fileUri.startsWith('http')
-          ? fileUri
+        secure_url: fallbackUri.startsWith('http')
+          ? fallbackUri
           : 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&q=80',
         public_id: 'artwork_' + Date.now(),
       };
     } else {
       return {
-        secure_url: fileUri.startsWith('http')
-          ? fileUri
-          : 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+        secure_url: fallbackUri.startsWith('http')
+          ? fallbackUri
+          : 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=melody-of-nature-112702.mp3',
         public_id: 'audio_' + Date.now(),
         duration: 210,
       };

@@ -69,9 +69,9 @@ export default function UploadScreen() {
         throw new Error('UPLOAD_CANCELLED');
       }
 
-      // 3. Upload Audio File to Cloudinary
+      // 3. Upload Audio File to Cloudinary CDN
       const audioUploadRes = await uploadToCloudinary(
-        asset.uri,
+        (asset as any).file || asset.uri,
         asset.name,
         'video'
       );
